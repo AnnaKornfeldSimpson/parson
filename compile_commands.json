@@ -1,0 +1,12 @@
+[
+    {
+        "command": "/usr/local/bin/clang -O0 -g -Wall -Wextra -pedantic-errors -o test -c /home/anna/repos/parsonSnapshot/tests.c",
+        "directory": "/home/anna/repos/parsonSnapshot", 
+        "file": "/home/anna/repos/parsonSnapshot/tests.c"
+    }, 
+    {
+        "command": "/usr/local/bin/clang -O0 -g -Wall -Wextra -pedantic-errors -o test -c /home/anna/repos/parsonSnapshot/parson.c",
+        "directory": "/home/anna/repos/parsonSnapshot", 
+        "file": "/home/anna/repos/parsonSnapshot/parson.c"
+    }
+]

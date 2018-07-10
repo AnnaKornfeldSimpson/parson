@@ -38,7 +38,7 @@
 #define EPSILON 0.000001
 
 void test_suite_1(void); /* Test 3 files from json.org + serialization*/
-void test_suite_2(JSON_Value *value); /* Test correctness of parsed values */
+void test_suite_2(_Ptr<JSON_Value> root_value); /* Test correctness of parsed values */
 void test_suite_2_no_comments(void);
 void test_suite_2_with_comments(void);
 void test_suite_3(void); /* Test parsing valid and invalid strings */
@@ -50,15 +50,15 @@ void test_suite_8(void); /* Test serialization */
 void test_suite_9(void); /* Test serialization (pretty) */
 void test_suite_10(void); /* Testing for memory leaks */
 
-void print_commits_info(const char *username, const char *repo);
+void print_commits_info(_Ptr<const char> username, _Ptr<const char> repo);
 void persistence_example(void);
 void serialization_example(void);
 
 static int malloc_count;
-static void *counted_malloc(size_t size);
-static void counted_free(void *ptr);
+static void* counted_malloc(size_t size);
+static void counted_free(void* ptr);
 
-static char * read_file(const char * filename);
+static char * read_file(_Ptr<const char> filename);
 
 static int tests_passed;
 static int tests_failed;
@@ -114,7 +114,7 @@ void test_suite_1(void) {
     if (val) { json_value_free(val); }
 }
 
-void test_suite_2(JSON_Value *root_value) {
+void test_suite_2(_Ptr<JSON_Value> root_value) {
     JSON_Object *root_object;
     JSON_Array *array;
     JSON_Value *array_value;
@@ -536,7 +536,7 @@ void test_suite_10(void) {
     TEST(malloc_count == 0);
 }
 
-void print_commits_info(const char *username, const char *repo) {
+void print_commits_info(_Ptr<const char> username, _Ptr<const char> repo) {
     JSON_Value *root_value;
     JSON_Array *commits;
     JSON_Object *commit;
@@ -610,7 +610,7 @@ void serialization_example(void) {
     json_value_free(root_value);
 }
 
-static char * read_file(const char * filename) {
+static char * read_file(_Ptr<const char> filename) {
     FILE *fp = fopen(filename, "r");
     size_t file_size;
     long pos;
@@ -650,7 +650,7 @@ static void *counted_malloc(size_t size) {
     return res;
 }
 
-static void counted_free(void *ptr) {
+static void counted_free(void* ptr) {
     if (ptr != NULL) {
         malloc_count--;
     }

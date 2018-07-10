@@ -1,0 +1,2105 @@
+parson.c:138:15: error: conflicting types for 'parson_strndup'
+static char * parson_strndup(_Ptr<const char> string, size_t n) {
+              ^
+parson.c:93:20: note: previous declaration is here
+static _Ptr<char>  parson_strndup(_Ptr<const char> string, size_t n);
+                   ^
+parson.c:144:28: warning: cannot prove argument meets declared bounds for 2nd parameter [-Wcheck-bounds-decls-unchecked-scope]
+    strncpy(output_string, string, n);
+                           ^~~~~~
+parson.c:144:28: note: (expanded) expected argument bounds are 'bounds((const char *)string, (const char *)string + n)'
+parson.c:144:28: note: (expanded) inferred bounds are 'bounds((_Array_ptr<const char>)string, (_Array_ptr<const char>)string + 1)'
+    strncpy(output_string, string, n);
+                           ^~~~~~
+parson.c:148:15: error: conflicting types for 'parson_strdup'
+static char * parson_strdup(_Ptr<const char> string) {
+              ^
+parson.c:94:20: note: previous declaration is here
+static _Ptr<char>  parson_strdup(_Ptr<const char> string);
+                   ^
+parson.c:149:42: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    return parson_strndup(string, strlen(string));
+                                         ^~~~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:143:27: note: passing argument to parameter 's' here
+size_t strlen(const char *s : itype(_Nt_array_ptr<const char>));
+                          ^
+parson.c:165:10: error: subscript of '_Ptr<const char>'
+    if (s[0] == '\0' || s[1] == '\0' || s[2] == '\0' || s[3] == '\0') {
+        ~^~
+parson.c:165:26: error: subscript of '_Ptr<const char>'
+    if (s[0] == '\0' || s[1] == '\0' || s[2] == '\0' || s[3] == '\0') {
+                        ~^~
+parson.c:165:42: error: subscript of '_Ptr<const char>'
+    if (s[0] == '\0' || s[1] == '\0' || s[2] == '\0' || s[3] == '\0') {
+                                        ~^~
+parson.c:165:58: error: subscript of '_Ptr<const char>'
+    if (s[0] == '\0' || s[1] == '\0' || s[2] == '\0' || s[3] == '\0') {
+                                                        ~^~
+parson.c:168:27: error: subscript of '_Ptr<const char>'
+    x1 = hex_char_to_int(s[0]);
+                         ~^~
+parson.c:169:27: error: subscript of '_Ptr<const char>'
+    x2 = hex_char_to_int(s[1]);
+                         ~^~
+parson.c:170:27: error: subscript of '_Ptr<const char>'
+    x3 = hex_char_to_int(s[2]);
+                         ~^~
+parson.c:171:27: error: subscript of '_Ptr<const char>'
+    x4 = hex_char_to_int(s[3]);
+                         ~^~
+parson.c:196:45: error: subscript of '_Ptr<const unsigned char>'
+    *len = num_bytes_in_utf8_sequence(string[0]);
+                                      ~~~~~~^~
+parson.c:199:20: error: subscript of '_Ptr<const unsigned char>'
+        cp = string[0];
+             ~~~~~~^~
+parson.c:200:43: error: subscript of '_Ptr<const unsigned char>'
+    } else if (*len == 2 && IS_CONT(string[1])) {
+                                    ~~~~~~^~
+parson.c:57:38: note: expanded from macro 'IS_CONT'
+#define IS_CONT(b) (((unsigned char)(b) & 0xC0) == 0x80) /* is utf-8 continuation byte */
+                                     ^
+parson.c:201:20: error: subscript of '_Ptr<const unsigned char>'
+        cp = string[0] & 0x1F;
+             ~~~~~~^~
+parson.c:202:33: error: subscript of '_Ptr<const unsigned char>'
+        cp = (cp << 6) | (string[1] & 0x3F);
+                          ~~~~~~^~
+parson.c:203:43: error: subscript of '_Ptr<const unsigned char>'
+    } else if (*len == 3 && IS_CONT(string[1]) && IS_CONT(string[2])) {
+                                    ~~~~~~^~
+parson.c:57:38: note: expanded from macro 'IS_CONT'
+#define IS_CONT(b) (((unsigned char)(b) & 0xC0) == 0x80) /* is utf-8 continuation byte */
+                                     ^
+parson.c:203:65: error: subscript of '_Ptr<const unsigned char>'
+    } else if (*len == 3 && IS_CONT(string[1]) && IS_CONT(string[2])) {
+                                                          ~~~~~~^~
+parson.c:57:38: note: expanded from macro 'IS_CONT'
+#define IS_CONT(b) (((unsigned char)(b) & 0xC0) == 0x80) /* is utf-8 continuation byte */
+                                     ^
+parson.c:204:36: error: subscript of '_Ptr<const unsigned char>'
+        cp = ((unsigned char)string[0]) & 0xF;
+                             ~~~~~~^~
+parson.c:205:33: error: subscript of '_Ptr<const unsigned char>'
+        cp = (cp << 6) | (string[1] & 0x3F);
+                          ~~~~~~^~
+parson.c:206:33: error: subscript of '_Ptr<const unsigned char>'
+        cp = (cp << 6) | (string[2] & 0x3F);
+                          ~~~~~~^~
+parson.c:207:43: error: subscript of '_Ptr<const unsigned char>'
+    } else if (*len == 4 && IS_CONT(string[1]) && IS_CONT(string[2]) && IS_CONT(string[3])) {
+                                    ~~~~~~^~
+parson.c:57:38: note: expanded from macro 'IS_CONT'
+#define IS_CONT(b) (((unsigned char)(b) & 0xC0) == 0x80) /* is utf-8 continuation byte */
+                                     ^
+parson.c:207:65: error: subscript of '_Ptr<const unsigned char>'
+    } else if (*len == 4 && IS_CONT(string[1]) && IS_CONT(string[2]) && IS_CONT(string[3])) {
+                                                          ~~~~~~^~
+parson.c:57:38: note: expanded from macro 'IS_CONT'
+#define IS_CONT(b) (((unsigned char)(b) & 0xC0) == 0x80) /* is utf-8 continuation byte */
+                                     ^
+parson.c:207:87: error: subscript of '_Ptr<const unsigned char>'
+    } else if (*len == 4 && IS_CONT(string[1]) && IS_CONT(string[2]) && IS_CONT(string[3])) {
+                                                                                ~~~~~~^~
+parson.c:57:38: note: expanded from macro 'IS_CONT'
+#define IS_CONT(b) (((unsigned char)(b) & 0xC0) == 0x80) /* is utf-8 continuation byte */
+                                     ^
+parson.c:208:20: error: subscript of '_Ptr<const unsigned char>'
+        cp = string[0] & 0x7;
+             ~~~~~~^~
+parson.c:209:33: error: subscript of '_Ptr<const unsigned char>'
+        cp = (cp << 6) | (string[1] & 0x3F);
+                          ~~~~~~^~
+parson.c:210:33: error: subscript of '_Ptr<const unsigned char>'
+        cp = (cp << 6) | (string[2] & 0x3F);
+                          ~~~~~~^~
+parson.c:211:33: error: subscript of '_Ptr<const unsigned char>'
+        cp = (cp << 6) | (string[3] & 0x3F);
+                          ~~~~~~^~
+parson.c:238:38: error: arithmetic on _Ptr type
+    const char *string_end =  string + string_len;
+                              ~~~~~~ ^
+parson.c:243:16: error: arithmetic on _Ptr type
+        string += len;
+        ~~~~~~ ^
+parson.c:249:29: error: subscript of '_Ptr<const char>'
+    if (length > 1 && string[0] == '0' && string[1] != '.') {
+                      ~~~~~~^~
+parson.c:249:49: error: subscript of '_Ptr<const char>'
+    if (length > 1 && string[0] == '0' && string[1] != '.') {
+                                          ~~~~~~^~
+parson.c:252:58: error: subscript of '_Ptr<const char>'
+    if (length > 2 && !strncmp(string, "-0", 2) && string[2] != '.') {
+                                                   ~~~~~~^~
+parson.c:256:32: error: subscript of '_Ptr<const char>'
+        if (strchr("xX", string[length])) {
+                         ~~~~~~^~~~~~~
+parson.c:263:15: error: conflicting types for 'read_file'
+static char * read_file(_Ptr<const char> filename) {
+              ^
+parson.c:91:20: note: previous declaration is here
+static _Ptr<char>  read_file(_Ptr<const char> filename);
+                   ^
+parson.c:264:22: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    FILE *fp = fopen(filename, "r");
+                     ^~~~~~~~
+/usr/local/lib/clang/6.0.0/include/stdio_checked.h:33:35: note: passing argument to parameter 'filename' here
+FILE *fopen(const char * restrict filename : itype(restrict _Nt_array_ptr<const char>),
+                                  ^
+parson.c:300:37: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    size_t start_token_len = strlen(start_token);
+                                    ^~~~~~~~~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:143:27: note: passing argument to parameter 's' here
+size_t strlen(const char *s : itype(_Nt_array_ptr<const char>));
+                          ^
+parson.c:301:35: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    size_t end_token_len = strlen(end_token);
+                                  ^~~~~~~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:143:27: note: passing argument to parameter 's' here
+size_t strlen(const char *s : itype(_Nt_array_ptr<const char>));
+                          ^
+parson.c:308:19: error: arithmetic on _Ptr type
+            string++;
+            ~~~~~~^
+parson.c:314:23: error: subscript of '_Ptr<char>'
+                string[i] = ' ';
+                ~~~~~~^~
+parson.c:316:29: error: arithmetic on _Ptr type
+            string = string + start_token_len;
+                     ~~~~~~ ^
+parson.c:317:26: error: passing '_Ptr<char>' to parameter of incompatible type 'const char *'
+            ptr = strstr(string, end_token);
+                         ^~~~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:135:26: note: passing argument to parameter 's1' here
+char *strstr(const char *s1 : itype(_Nt_array_ptr<const char>),
+                         ^
+parson.c:322:23: error: subscript of '_Ptr<char>'
+                string[i] = ' ';
+                ~~~~~~^~
+parson.c:327:15: error: arithmetic on _Ptr type
+        string++;
+        ~~~~~~^
+parson.c:312:42: warning: cannot prove argument meets declared bounds for 1st parameter [-Wcheck-bounds-decls-unchecked-scope]
+        } else if (!in_string && strncmp(string, start_token, start_token_len) == 0) {
+                                         ^~~~~~
+parson.c:312:42: note: (expanded) expected argument bounds are 'bounds((const char *)string, (const char *)string + start_token_len)'
+parson.c:312:42: note: (expanded) inferred bounds are 'bounds((_Array_ptr<char>)string, (_Array_ptr<char>)string + 1)'
+        } else if (!in_string && strncmp(string, start_token, start_token_len) == 0) {
+                                         ^~~~~~
+parson.c:312:50: warning: cannot prove argument meets declared bounds for 2nd parameter [-Wcheck-bounds-decls-unchecked-scope]
+        } else if (!in_string && strncmp(string, start_token, start_token_len) == 0) {
+                                                 ^~~~~~~~~~~
+parson.c:312:50: note: (expanded) expected argument bounds are 'bounds((const char *)start_token, (const char *)start_token + start_token_len)'
+parson.c:312:50: note: (expanded) inferred bounds are 'bounds((_Array_ptr<const char>)start_token, (_Array_ptr<const char>)start_token + 1)'
+        } else if (!in_string && strncmp(string, start_token, start_token_len) == 0) {
+                                                 ^~~~~~~~~~~
+parson.c:324:22: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+            string = ptr + end_token_len - 1;
+                     ^~~~~~~~~~~~~~~~~~~~~~~
+parson.c:332:22: error: conflicting types for 'json_object_init'
+static JSON_Object * json_object_init(_Ptr<JSON_Value> wrapping_value) {
+                     ^
+parson.c:103:27: note: previous declaration is here
+static _Ptr<JSON_Object>  json_object_init(_Ptr<JSON_Value> wrapping_value);
+                          ^
+parson.c:337:29: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
+    new_obj->wrapping_value = wrapping_value;
+                            ^ ~~~~~~~~~~~~~~
+parson.c:350:31: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    if (json_object_get_value(object, name) != NULL) {
+                              ^~~~~~
+./parson.h:109:58: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:360:26: error: assigning to 'char *' from incompatible type '_Ptr<char>'
+    object->names[index] = parson_strdup(name);
+                         ^ ~~~~~~~~~~~~~~~~~~~
+parson.c:364:52: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    value->parent = json_object_get_wrapping_value(object);
+                                                   ^~~~~~
+./parson.h:131:65: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_wrapping_value(const JSON_Object *object);
+                                                                ^
+parson.c:365:27: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
+    object->values[index] = value;
+                          ^ ~~~~~
+parson.c:400:21: error: conflicting types for 'json_object_nget_value'
+static JSON_Value * json_object_nget_value(_Ptr<const JSON_Object> object, _Ptr<const char> name, size_t n) {
+                    ^
+parson.c:106:26: note: previous declaration is here
+static _Ptr<JSON_Value>  json_object_nget_value(_Ptr<const JSON_Object> object, _Ptr<const char> name, size_t n);
+                         ^
+parson.c:402:43: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    for (i = 0; i < json_object_get_count(object); i++) {
+                                          ^~~~~~
+./parson.h:128:59: note: passing argument to parameter 'object' here
+size_t        json_object_get_count   (const JSON_Object *object);
+                                                          ^
+parson.c:422:17: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'void *'
+    parson_free(object);
+                ^~~~~~
+parson.c:426:21: error: conflicting types for 'json_array_init'
+static JSON_Array * json_array_init(_Ptr<JSON_Value> wrapping_value) {
+                    ^
+parson.c:110:26: note: previous declaration is here
+static _Ptr<JSON_Array>  json_array_init(_Ptr<JSON_Value> wrapping_value);
+                         ^
+parson.c:431:31: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
+    new_array->wrapping_value = wrapping_value;
+                              ^ ~~~~~~~~~~~~~~
+parson.c:445:51: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    value->parent = json_array_get_wrapping_value(array);
+                                                  ^~~~~
+./parson.h:176:63: note: passing argument to parameter 'array' here
+JSON_Value  * json_array_get_wrapping_value(const JSON_Array *array);
+                                                              ^
+parson.c:446:32: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
+    array->items[array->count] = value;
+                               ^ ~~~~~
+parson.c:475:17: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'void *'
+    parson_free(array);
+                ^~~~~
+parson.c:479:21: error: conflicting types for 'json_value_init_string_no_copy'
+static JSON_Value * json_value_init_string_no_copy(_Ptr<char> string) {
+                    ^
+parson.c:116:26: note: previous declaration is here
+static _Ptr<JSON_Value>  json_value_init_string_no_copy(_Ptr<char> string);
+                         ^
+parson.c:486:29: error: assigning to 'char *' from incompatible type '_Ptr<char>'
+    new_value->value.string = string;
+                            ^ ~~~~~~
+parson.c:495:5: error: arithmetic on _Ptr type
+    SKIP_CHAR(string);
+    ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:500:13: error: arithmetic on _Ptr type
+            SKIP_CHAR(string);
+            ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:505:9: error: arithmetic on _Ptr type
+        SKIP_CHAR(string);
+        ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:507:5: error: arithmetic on _Ptr type
+    SKIP_CHAR(string);
+    ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:514:11: error: initializing 'char *' with an expression of incompatible type '_Ptr<char>'
+    char *processed_ptr = *processed;
+          ^               ~~~~~~~~~~
+parson.c:515:17: error: initializing 'const char *' with an expression of incompatible type '_Ptr<const char>'
+    const char *unprocessed_ptr = *unprocessed;
+                ^                 ~~~~~~~~~~~~
+parson.c:560:14: error: conflicting types for 'process_string'
+static char* process_string(_Ptr<const char> input, size_t len) {
+             ^
+parson.c:121:26: note: previous declaration is here
+static _Ptr<char>        process_string(_Ptr<const char> input, size_t len);
+                         ^
+parson.c:561:17: error: initializing 'const char *' with an expression of incompatible type '_Ptr<const char>'
+    const char *input_ptr = input;
+                ^           ~~~~~
+parson.c:616:15: error: conflicting types for 'get_quoted_string'
+static char * get_quoted_string(_Ptr<_Ptr<const char>> string) {
+              ^
+parson.c:122:26: note: previous declaration is here
+static _Ptr<char>        get_quoted_string(_Ptr<_Ptr<const char>> string);
+                         ^
+parson.c:617:17: error: initializing 'const char *' with an expression of incompatible type '_Ptr<const char>'
+    const char *string_start = *string;
+                ^              ~~~~~~~
+parson.c:627:21: error: conflicting types for 'parse_value'
+static JSON_Value * parse_value(_Ptr<_Ptr<const char>> string, size_t nesting) {
+                    ^
+parson.c:129:26: note: previous declaration is here
+static _Ptr<JSON_Value>  parse_value(_Ptr<_Ptr<const char>> string, size_t nesting);
+                         ^
+parson.c:631:5: error: arithmetic on _Ptr type
+    SKIP_WHITESPACES(string);
+    ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:48:73: note: expanded from macro 'SKIP_WHITESPACES'
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); }
+                                                                        ^~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:659:5: error: arithmetic on _Ptr type
+    SKIP_CHAR(string);
+    ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:660:5: error: arithmetic on _Ptr type
+    SKIP_WHITESPACES(string);
+    ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:48:73: note: expanded from macro 'SKIP_WHITESPACES'
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); }
+                                                                        ^~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:662:9: error: arithmetic on _Ptr type
+        SKIP_CHAR(string);
+        ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:666:17: error: assigning to 'char *' from incompatible type '_Ptr<char>'
+        new_key = get_quoted_string(string);
+                ^ ~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:671:9: error: arithmetic on _Ptr type
+        SKIP_WHITESPACES(string);
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:48:73: note: expanded from macro 'SKIP_WHITESPACES'
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); }
+                                                                        ^~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:677:9: error: arithmetic on _Ptr type
+        SKIP_CHAR(string);
+        ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:678:19: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
+        new_value = parse_value(string, nesting);
+                  ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:691:9: error: arithmetic on _Ptr type
+        SKIP_WHITESPACES(string);
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:48:73: note: expanded from macro 'SKIP_WHITESPACES'
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); }
+                                                                        ^~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:695:9: error: arithmetic on _Ptr type
+        SKIP_CHAR(string);
+        ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:696:9: error: arithmetic on _Ptr type
+        SKIP_WHITESPACES(string);
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:48:73: note: expanded from macro 'SKIP_WHITESPACES'
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); }
+                                                                        ^~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:698:5: error: arithmetic on _Ptr type
+    SKIP_WHITESPACES(string);
+    ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:48:73: note: expanded from macro 'SKIP_WHITESPACES'
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); }
+                                                                        ^~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:704:5: error: arithmetic on _Ptr type
+    SKIP_CHAR(string);
+    ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:684:29: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+        if (json_object_add(output_object, new_key, new_value) == JSONFailure) {
+                            ^~~~~~~~~~~~~
+parson.c:684:44: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+        if (json_object_add(output_object, new_key, new_value) == JSONFailure) {
+                                           ^~~~~~~
+parson.c:684:53: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+        if (json_object_add(output_object, new_key, new_value) == JSONFailure) {
+                                                    ^~~~~~~~~
+parson.c:700:28: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+        json_object_resize(output_object, json_object_get_count(output_object)) == JSONFailure) {
+                           ^~~~~~~~~~~~~
+parson.c:714:5: error: arithmetic on _Ptr type
+    SKIP_CHAR(string);
+    ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:715:5: error: arithmetic on _Ptr type
+    SKIP_WHITESPACES(string);
+    ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:48:73: note: expanded from macro 'SKIP_WHITESPACES'
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); }
+                                                                        ^~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:717:9: error: arithmetic on _Ptr type
+        SKIP_CHAR(string);
+        ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:721:25: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
+        new_array_value = parse_value(string, nesting);
+                        ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:731:9: error: arithmetic on _Ptr type
+        SKIP_WHITESPACES(string);
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:48:73: note: expanded from macro 'SKIP_WHITESPACES'
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); }
+                                                                        ^~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:735:9: error: arithmetic on _Ptr type
+        SKIP_CHAR(string);
+        ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:736:9: error: arithmetic on _Ptr type
+        SKIP_WHITESPACES(string);
+        ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:48:73: note: expanded from macro 'SKIP_WHITESPACES'
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); }
+                                                                        ^~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:738:5: error: arithmetic on _Ptr type
+    SKIP_WHITESPACES(string);
+    ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:48:73: note: expanded from macro 'SKIP_WHITESPACES'
+#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); }
+                                                                        ^~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:744:5: error: arithmetic on _Ptr type
+    SKIP_CHAR(string);
+    ^~~~~~~~~~~~~~~~~
+parson.c:47:38: note: expanded from macro 'SKIP_CHAR'
+#define SKIP_CHAR(str)        ((*str)++)
+                               ~~~~~~^
+parson.c:726:28: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+        if (json_array_add(output_array, new_array_value) == JSONFailure) {
+                           ^~~~~~~~~~~~
+parson.c:726:42: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+        if (json_array_add(output_array, new_array_value) == JSONFailure) {
+                                         ^~~~~~~~~~~~~~~
+parson.c:740:27: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+        json_array_resize(output_array, json_array_get_count(output_array)) == JSONFailure) {
+                          ^~~~~~~~~~~~
+parson.c:750:11: error: initializing 'char *' with an expression of incompatible type '_Ptr<char>'
+    char *new_string = get_quoted_string(string);
+          ^            ~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:762:26: error: conflicting types for 'parse_boolean_value'
+static _Ptr<JSON_Value>  parse_boolean_value(_Ptr<_Ptr<const char>> string) {
+                         ^
+parson.c:126:21: note: previous declaration is here
+static JSON_Value * parse_boolean_value(_Ptr<_Ptr<const char>> string);
+                    ^
+parson.c:766:17: error: arithmetic on _Ptr type
+        *string += true_token_size;
+        ~~~~~~~ ^
+parson.c:769:17: error: arithmetic on _Ptr type
+        *string += false_token_size;
+        ~~~~~~~ ^
+parson.c:765:25: warning: cannot prove argument meets declared bounds for 2nd parameter [-Wcheck-bounds-decls-unchecked-scope]
+    if (strncmp("true", *string, true_token_size) == 0) {
+                        ^~~~~~~
+parson.c:765:25: note: (expanded) expected argument bounds are 'bounds((const char *)*string, (const char *)*string + true_token_size)'
+parson.c:765:25: note: (expanded) inferred bounds are 'bounds((_Array_ptr<const char>)*string, (_Array_ptr<const char>)*string + 1)'
+    if (strncmp("true", *string, true_token_size) == 0) {
+                        ^~~~~~~
+parson.c:767:16: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+        return json_value_init_boolean(1);
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:768:33: warning: cannot prove argument meets declared bounds for 2nd parameter [-Wcheck-bounds-decls-unchecked-scope]
+    } else if (strncmp("false", *string, false_token_size) == 0) {
+                                ^~~~~~~
+parson.c:768:33: note: (expanded) expected argument bounds are 'bounds((const char *)*string, (const char *)*string + false_token_size)'
+parson.c:768:33: note: (expanded) inferred bounds are 'bounds((_Array_ptr<const char>)*string, (_Array_ptr<const char>)*string + 1)'
+    } else if (strncmp("false", *string, false_token_size) == 0) {
+                                ^~~~~~~
+parson.c:770:16: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+        return json_value_init_boolean(0);
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:775:26: error: conflicting types for 'parse_number_value'
+static _Ptr<JSON_Value>  parse_number_value(_Ptr<_Ptr<const char>> string) {
+                         ^
+parson.c:127:21: note: previous declaration is here
+static JSON_Value * parse_number_value(_Ptr<_Ptr<const char>> string);
+                    ^
+parson.c:779:21: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    number = strtod(*string, &end);
+                    ^~~~~~~
+/usr/local/lib/clang/6.0.0/include/stdlib_checked.h:17:37: note: passing argument to parameter 'nptr' here
+double strtod(const char * restrict nptr :
+                                    ^
+parson.c:783:15: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+    *string = end;
+              ^~~
+parson.c:784:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+    return json_value_init_number(number);
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:790:17: error: arithmetic on _Ptr type
+        *string += token_size;
+        ~~~~~~~ ^
+parson.c:789:25: warning: cannot prove argument meets declared bounds for 2nd parameter [-Wcheck-bounds-decls-unchecked-scope]
+    if (strncmp("null", *string, token_size) == 0) {
+                        ^~~~~~~
+parson.c:789:25: note: (expanded) expected argument bounds are 'bounds((const char *)*string, (const char *)*string + token_size)'
+parson.c:789:25: note: (expanded) inferred bounds are 'bounds((_Array_ptr<const char>)*string, (_Array_ptr<const char>)*string + 1)'
+    if (strncmp("null", *string, token_size) == 0) {
+                        ^~~~~~~
+parson.c:817:33: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    switch (json_value_get_type(value)) {
+                                ^~~~~
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:807:80: warning: unused parameter 'buf' [-Wunused-parameter]
+static int json_serialize_to_buffer_r(_Ptr<const JSON_Value> value, _Ptr<char> buf, int level, int is_pretty, _Ptr<char> num_buf)
+                                                                               ^
+parson.c:807:89: warning: unused parameter 'level' [-Wunused-parameter]
+static int json_serialize_to_buffer_r(_Ptr<const JSON_Value> value, _Ptr<char> buf, int level, int is_pretty, _Ptr<char> num_buf)
+                                                                                        ^
+parson.c:807:100: warning: unused parameter 'is_pretty' [-Wunused-parameter]
+static int json_serialize_to_buffer_r(_Ptr<const JSON_Value> value, _Ptr<char> buf, int level, int is_pretty, _Ptr<char> num_buf)
+                                                                                                   ^
+parson.c:807:122: warning: unused parameter 'num_buf' [-Wunused-parameter]
+static int json_serialize_to_buffer_r(_Ptr<const JSON_Value> value, _Ptr<char> buf, int level, int is_pretty, _Ptr<char> num_buf)
+                                                                                                                         ^
+parson.c:944:32: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    size_t i = 0, len = strlen(string);
+                               ^~~~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:143:27: note: passing argument to parameter 's' here
+size_t strlen(const char *s : itype(_Nt_array_ptr<const char>));
+                          ^
+parson.c:947:5: error: arithmetic on _Ptr type
+    APPEND_STRING("\"");
+    ^~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:949:19: error: subscript of '_Ptr<const char>'
+        c = string[i];
+            ~~~~~~^~
+parson.c:951:24: error: arithmetic on _Ptr type
+            case '\"': APPEND_STRING("\\\""); break;
+                       ^~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:952:24: error: arithmetic on _Ptr type
+            case '\\': APPEND_STRING("\\\\"); break;
+                       ^~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:953:24: error: arithmetic on _Ptr type
+            case '/':  APPEND_STRING("\\/"); break; /* to make json embeddable in xml\/html */
+                       ^~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:954:24: error: arithmetic on _Ptr type
+            case '\b': APPEND_STRING("\\b"); break;
+                       ^~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:955:24: error: arithmetic on _Ptr type
+            case '\f': APPEND_STRING("\\f"); break;
+                       ^~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:956:24: error: arithmetic on _Ptr type
+            case '\n': APPEND_STRING("\\n"); break;
+                       ^~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:957:24: error: arithmetic on _Ptr type
+            case '\r': APPEND_STRING("\\r"); break;
+                       ^~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:958:24: error: arithmetic on _Ptr type
+            case '\t': APPEND_STRING("\\t"); break;
+                       ^~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:959:26: error: arithmetic on _Ptr type
+            case '\x00': APPEND_STRING("\\u0000"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:960:26: error: arithmetic on _Ptr type
+            case '\x01': APPEND_STRING("\\u0001"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:961:26: error: arithmetic on _Ptr type
+            case '\x02': APPEND_STRING("\\u0002"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:962:26: error: arithmetic on _Ptr type
+            case '\x03': APPEND_STRING("\\u0003"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:963:26: error: arithmetic on _Ptr type
+            case '\x04': APPEND_STRING("\\u0004"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:964:26: error: arithmetic on _Ptr type
+            case '\x05': APPEND_STRING("\\u0005"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:965:26: error: arithmetic on _Ptr type
+            case '\x06': APPEND_STRING("\\u0006"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:966:26: error: arithmetic on _Ptr type
+            case '\x07': APPEND_STRING("\\u0007"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:970:26: error: arithmetic on _Ptr type
+            case '\x0b': APPEND_STRING("\\u000b"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:973:26: error: arithmetic on _Ptr type
+            case '\x0e': APPEND_STRING("\\u000e"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:974:26: error: arithmetic on _Ptr type
+            case '\x0f': APPEND_STRING("\\u000f"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:975:26: error: arithmetic on _Ptr type
+            case '\x10': APPEND_STRING("\\u0010"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:976:26: error: arithmetic on _Ptr type
+            case '\x11': APPEND_STRING("\\u0011"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:977:26: error: arithmetic on _Ptr type
+            case '\x12': APPEND_STRING("\\u0012"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:978:26: error: arithmetic on _Ptr type
+            case '\x13': APPEND_STRING("\\u0013"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:979:26: error: arithmetic on _Ptr type
+            case '\x14': APPEND_STRING("\\u0014"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:980:26: error: arithmetic on _Ptr type
+            case '\x15': APPEND_STRING("\\u0015"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:981:26: error: arithmetic on _Ptr type
+            case '\x16': APPEND_STRING("\\u0016"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:982:26: error: arithmetic on _Ptr type
+            case '\x17': APPEND_STRING("\\u0017"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:983:26: error: arithmetic on _Ptr type
+            case '\x18': APPEND_STRING("\\u0018"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:984:26: error: arithmetic on _Ptr type
+            case '\x19': APPEND_STRING("\\u0019"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:985:26: error: arithmetic on _Ptr type
+            case '\x1a': APPEND_STRING("\\u001a"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:986:26: error: arithmetic on _Ptr type
+            case '\x1b': APPEND_STRING("\\u001b"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:987:26: error: arithmetic on _Ptr type
+            case '\x1c': APPEND_STRING("\\u001c"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:988:26: error: arithmetic on _Ptr type
+            case '\x1d': APPEND_STRING("\\u001d"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:989:26: error: arithmetic on _Ptr type
+            case '\x1e': APPEND_STRING("\\u001e"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:990:26: error: arithmetic on _Ptr type
+            case '\x1f': APPEND_STRING("\\u001f"); break;
+                         ^~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:993:24: error: subscript of '_Ptr<char>'
+                    buf[0] = c;
+                    ~~~^~
+parson.c:994:25: error: arithmetic on _Ptr type
+                    buf += 1;
+                    ~~~ ^
+parson.c:1000:5: error: arithmetic on _Ptr type
+    APPEND_STRING("\"");
+    ^~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:1008:9: error: arithmetic on _Ptr type
+        APPEND_STRING("    ");
+        ^~~~~~~~~~~~~~~~~~~~~
+parson.c:799:56: note: expanded from macro 'APPEND_STRING'
+                                if (buf != NULL) { buf += written; }\
+                                                   ~~~ ^
+parson.c:1015:28: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+        return (int)strlen(string);
+                           ^~~~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:143:27: note: passing argument to parameter 's' here
+size_t strlen(const char *s : itype(_Nt_array_ptr<const char>));
+                          ^
+parson.c:1017:20: error: passing '_Ptr<char>' to parameter of incompatible type 'char *'
+    return sprintf(buf, "%s", string);
+                   ^~~
+/usr/local/lib/clang/6.0.0/include/stdio_checked.h:87:29: note: passing argument to parameter 's' here
+int sprintf(char * restrict s,
+                            ^
+parson.c:1024:14: error: conflicting types for 'json_parse_file'
+JSON_Value * json_parse_file(_Ptr<const char> filename) {
+             ^
+./parson.h:64:14: note: previous declaration is here
+JSON_Value * json_parse_file(const char *filename);
+             ^
+parson.c:1025:11: error: initializing 'char *' with an expression of incompatible type '_Ptr<char>'
+    char *file_contents = read_file(filename);
+          ^               ~~~~~~~~~~~~~~~~~~~
+parson.c:1035:19: error: conflicting types for 'json_parse_file_with_comments'
+_Ptr<JSON_Value>  json_parse_file_with_comments(_Ptr<const char> filename) {
+                  ^
+./parson.h:68:14: note: previous declaration is here
+JSON_Value * json_parse_file_with_comments(const char *filename);
+             ^
+parson.c:1036:11: error: initializing 'char *' with an expression of incompatible type '_Ptr<char>'
+    char *file_contents = read_file(filename);
+          ^               ~~~~~~~~~~~~~~~~~~~
+parson.c:1046:14: error: conflicting types for 'json_parse_string'
+JSON_Value * json_parse_string(_Ptr<const char> string) {
+             ^
+./parson.h:71:14: note: previous declaration is here
+JSON_Value * json_parse_string(const char *string);
+             ^
+parson.c:1050:15: error: subscript of '_Ptr<const char>'
+    if (string[0] == '\xEF' && string[1] == '\xBB' && string[2] == '\xBF') {
+        ~~~~~~^~
+parson.c:1050:38: error: subscript of '_Ptr<const char>'
+    if (string[0] == '\xEF' && string[1] == '\xBB' && string[2] == '\xBF') {
+                               ~~~~~~^~
+parson.c:1050:61: error: subscript of '_Ptr<const char>'
+    if (string[0] == '\xEF' && string[1] == '\xBB' && string[2] == '\xBF') {
+                                                      ~~~~~~^~
+parson.c:1051:25: error: arithmetic on _Ptr type
+        string = string + 3; /* Support for UTF-8 BOM */
+                 ~~~~~~ ^
+parson.c:1053:24: error: passing 'const char **' to parameter of incompatible type '_Ptr<_Ptr<const char>>'
+    return parse_value((const char**)&string, 0);
+                       ^~~~~~~~~~~~~~~~~~~~~
+parson.c:129:61: note: passing argument to parameter 'string' here
+static _Ptr<JSON_Value>  parse_value(_Ptr<_Ptr<const char>> string, size_t nesting);
+                                                            ^
+parson.c:1056:14: error: conflicting types for 'json_parse_string_with_comments'
+JSON_Value * json_parse_string_with_comments(_Ptr<const char> string) {
+             ^
+./parson.h:75:14: note: previous declaration is here
+JSON_Value * json_parse_string_with_comments(const char *string);
+             ^
+parson.c:1059:25: error: assigning to 'char *' from incompatible type '_Ptr<char>'
+    string_mutable_copy = parson_strdup(string);
+                        ^ ~~~~~~~~~~~~~~~~~~~~~
+parson.c:1066:26: error: passing 'const char **' to parameter of incompatible type '_Ptr<_Ptr<const char>>'
+    result = parse_value((const char**)&string_mutable_copy_ptr, 0);
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:129:61: note: passing argument to parameter 'string' here
+static _Ptr<JSON_Value>  parse_value(_Ptr<_Ptr<const char>> string, size_t nesting);
+                                                            ^
+parson.c:1063:21: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+    remove_comments(string_mutable_copy, "/*", "*/");
+                    ^~~~~~~~~~~~~~~~~~~
+parson.c:1064:21: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+    remove_comments(string_mutable_copy, "//", "\n");
+                    ^~~~~~~~~~~~~~~~~~~
+parson.c:1073:14: error: conflicting types for 'json_object_get_value'
+JSON_Value * json_object_get_value(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+             ^
+./parson.h:109:15: note: previous declaration is here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+              ^
+parson.c:1077:56: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    return json_object_nget_value(object, name, strlen(name));
+                                                       ^~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:143:27: note: passing argument to parameter 's' here
+size_t strlen(const char *s : itype(_Nt_array_ptr<const char>));
+                          ^
+parson.c:1080:14: error: conflicting types for 'json_object_get_string'
+const char * json_object_get_string(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+             ^
+./parson.h:110:15: note: previous declaration is here
+const char  * json_object_get_string (const JSON_Object *object, const char *name);
+              ^
+parson.c:1081:56: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_value_get_string(json_object_get_value(object, name));
+                                                       ^~~~~~
+./parson.h:109:58: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1084:8: error: conflicting types for 'json_object_get_number'
+double json_object_get_number(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+       ^
+./parson.h:113:15: note: previous declaration is here
+double        json_object_get_number (const JSON_Object *object, const char *name); /* returns 0 on fail */
+              ^
+parson.c:1085:56: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_value_get_number(json_object_get_value(object, name));
+                                                       ^~~~~~
+./parson.h:109:58: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1088:15: error: conflicting types for 'json_object_get_object'
+JSON_Object * json_object_get_object(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+              ^
+./parson.h:111:15: note: previous declaration is here
+JSON_Object * json_object_get_object (const JSON_Object *object, const char *name);
+              ^
+parson.c:1089:56: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_value_get_object(json_object_get_value(object, name));
+                                                       ^~~~~~
+./parson.h:109:58: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1092:14: error: conflicting types for 'json_object_get_array'
+JSON_Array * json_object_get_array(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+             ^
+./parson.h:112:15: note: previous declaration is here
+JSON_Array  * json_object_get_array  (const JSON_Object *object, const char *name);
+              ^
+parson.c:1093:55: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_value_get_array(json_object_get_value(object, name));
+                                                      ^~~~~~
+./parson.h:109:58: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1096:5: error: conflicting types for 'json_object_get_boolean'
+int json_object_get_boolean(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+    ^
+./parson.h:114:15: note: previous declaration is here
+int           json_object_get_boolean(const JSON_Object *object, const char *name); /* returns -1 on fail */
+              ^
+parson.c:1097:57: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_value_get_boolean(json_object_get_value(object, name));
+                                                        ^~~~~~
+./parson.h:109:58: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1100:14: error: conflicting types for 'json_object_dotget_value'
+JSON_Value * json_object_dotget_value(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+             ^
+./parson.h:120:15: note: previous declaration is here
+JSON_Value  * json_object_dotget_value  (const JSON_Object *object, const char *name);
+              ^
+parson.c:1101:39: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    const char *dot_position = strchr(name, '.');
+                                      ^~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:122:26: note: passing argument to parameter 's' here
+char *strchr(const char *s : itype(_Nt_array_ptr<const char>), int c) :
+                         ^
+parson.c:1103:38: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+        return json_object_get_value(object, name);
+                                     ^~~~~~
+./parson.h:109:58: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1105:36: error: passing '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    object = json_value_get_object(json_object_nget_value(object, name, dot_position - name));
+                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./parson.h:215:58: note: passing argument to parameter 'value' here
+JSON_Object *   json_value_get_object (const JSON_Value *value);
+                                                         ^
+parson.c:1106:37: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_object_dotget_value(object, dot_position + 1);
+                                    ^~~~~~
+./parson.h:120:61: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_dotget_value  (const JSON_Object *object, const char *name);
+                                                            ^
+parson.c:1109:14: error: conflicting types for 'json_object_dotget_string'
+const char * json_object_dotget_string(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+             ^
+./parson.h:121:15: note: previous declaration is here
+const char  * json_object_dotget_string (const JSON_Object *object, const char *name);
+              ^
+parson.c:1110:59: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_value_get_string(json_object_dotget_value(object, name));
+                                                          ^~~~~~
+./parson.h:120:61: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_dotget_value  (const JSON_Object *object, const char *name);
+                                                            ^
+parson.c:1113:8: error: conflicting types for 'json_object_dotget_number'
+double json_object_dotget_number(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+       ^
+./parson.h:124:15: note: previous declaration is here
+double        json_object_dotget_number (const JSON_Object *object, const char *name); /* returns 0 on fail */
+              ^
+parson.c:1114:59: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_value_get_number(json_object_dotget_value(object, name));
+                                                          ^~~~~~
+./parson.h:120:61: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_dotget_value  (const JSON_Object *object, const char *name);
+                                                            ^
+parson.c:1117:15: error: conflicting types for 'json_object_dotget_object'
+JSON_Object * json_object_dotget_object(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+              ^
+./parson.h:122:15: note: previous declaration is here
+JSON_Object * json_object_dotget_object (const JSON_Object *object, const char *name);
+              ^
+parson.c:1118:59: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_value_get_object(json_object_dotget_value(object, name));
+                                                          ^~~~~~
+./parson.h:120:61: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_dotget_value  (const JSON_Object *object, const char *name);
+                                                            ^
+parson.c:1121:14: error: conflicting types for 'json_object_dotget_array'
+JSON_Array * json_object_dotget_array(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+             ^
+./parson.h:123:15: note: previous declaration is here
+JSON_Array  * json_object_dotget_array  (const JSON_Object *object, const char *name);
+              ^
+parson.c:1122:58: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_value_get_array(json_object_dotget_value(object, name));
+                                                         ^~~~~~
+./parson.h:120:61: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_dotget_value  (const JSON_Object *object, const char *name);
+                                                            ^
+parson.c:1125:5: error: conflicting types for 'json_object_dotget_boolean'
+int json_object_dotget_boolean(_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+    ^
+./parson.h:125:15: note: previous declaration is here
+int           json_object_dotget_boolean(const JSON_Object *object, const char *name); /* returns -1 on fail */
+              ^
+parson.c:1126:60: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_value_get_boolean(json_object_dotget_value(object, name));
+                                                           ^~~~~~
+./parson.h:120:61: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_dotget_value  (const JSON_Object *object, const char *name);
+                                                            ^
+parson.c:1129:8: error: conflicting types for 'json_object_get_count'
+size_t json_object_get_count(_Ptr<const JSON_Object> object) {
+       ^
+./parson.h:128:15: note: previous declaration is here
+size_t        json_object_get_count   (const JSON_Object *object);
+              ^
+parson.c:1133:14: error: conflicting types for 'json_object_get_name'
+const char * json_object_get_name(_Ptr<const JSON_Object> object, size_t index) {
+             ^
+./parson.h:129:15: note: previous declaration is here
+const char  * json_object_get_name    (const JSON_Object *object, size_t index);
+              ^
+parson.c:1134:58: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    if (object == NULL || index >= json_object_get_count(object)) {
+                                                         ^~~~~~
+./parson.h:128:59: note: passing argument to parameter 'object' here
+size_t        json_object_get_count   (const JSON_Object *object);
+                                                          ^
+parson.c:1140:14: error: conflicting types for 'json_object_get_value_at'
+JSON_Value * json_object_get_value_at(_Ptr<const JSON_Object> object, size_t index) {
+             ^
+./parson.h:130:15: note: previous declaration is here
+JSON_Value  * json_object_get_value_at(const JSON_Object *object, size_t index);
+              ^
+parson.c:1141:58: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    if (object == NULL || index >= json_object_get_count(object)) {
+                                                         ^~~~~~
+./parson.h:128:59: note: passing argument to parameter 'object' here
+size_t        json_object_get_count   (const JSON_Object *object);
+                                                          ^
+parson.c:1147:13: error: conflicting types for 'json_object_get_wrapping_value'
+JSON_Value *json_object_get_wrapping_value(_Ptr<const JSON_Object> object) {
+            ^
+./parson.h:131:15: note: previous declaration is here
+JSON_Value  * json_object_get_wrapping_value(const JSON_Object *object);
+              ^
+parson.c:1151:5: error: conflicting types for 'json_object_has_value'
+int json_object_has_value (_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+    ^
+./parson.h:135:5: note: previous declaration is here
+int json_object_has_value        (const JSON_Object *object, const char *name);
+    ^
+parson.c:1152:34: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_object_get_value(object, name) != NULL;
+                                 ^~~~~~
+./parson.h:109:58: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1155:5: error: conflicting types for 'json_object_has_value_of_type'
+int json_object_has_value_of_type(_Ptr<const JSON_Object> object, _Ptr<const char> name, JSON_Value_Type type) {
+    ^
+./parson.h:136:5: note: previous declaration is here
+int json_object_has_value_of_type(const JSON_Object *object, const char *name, JSON_Value_Type type);
+    ^
+parson.c:1156:45: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    JSON_Value *val = json_object_get_value(object, name);
+                                            ^~~~~~
+./parson.h:109:58: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1160:5: error: conflicting types for 'json_object_dothas_value'
+int json_object_dothas_value (_Ptr<const JSON_Object> object, _Ptr<const char> name) {
+    ^
+./parson.h:138:5: note: previous declaration is here
+int json_object_dothas_value        (const JSON_Object *object, const char *name);
+    ^
+parson.c:1161:37: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    return json_object_dotget_value(object, name) != NULL;
+                                    ^~~~~~
+./parson.h:120:61: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_dotget_value  (const JSON_Object *object, const char *name);
+                                                            ^
+parson.c:1164:5: error: conflicting types for 'json_object_dothas_value_of_type'
+int json_object_dothas_value_of_type(_Ptr<const JSON_Object> object, _Ptr<const char> name, JSON_Value_Type type) {
+    ^
+./parson.h:139:5: note: previous declaration is here
+int json_object_dothas_value_of_type(const JSON_Object *object, const char *name, JSON_Value_Type type);
+    ^
+parson.c:1165:48: error: passing '_Ptr<const JSON_Object>' (aka '_Ptr<const struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    JSON_Value *val = json_object_dotget_value(object, name);
+                                               ^~~~~~
+./parson.h:120:61: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_dotget_value  (const JSON_Object *object, const char *name);
+                                                            ^
+parson.c:1170:14: error: conflicting types for 'json_array_get_value'
+JSON_Value * json_array_get_value(_Ptr<const JSON_Array> array, size_t index) {
+             ^
+./parson.h:169:15: note: previous declaration is here
+JSON_Value  * json_array_get_value  (const JSON_Array *array, size_t index);
+              ^
+parson.c:1171:56: error: passing '_Ptr<const JSON_Array>' (aka '_Ptr<const struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    if (array == NULL || index >= json_array_get_count(array)) {
+                                                       ^~~~~
+./parson.h:175:56: note: passing argument to parameter 'array' here
+size_t        json_array_get_count  (const JSON_Array *array);
+                                                       ^
+parson.c:1177:14: error: conflicting types for 'json_array_get_string'
+const char * json_array_get_string(_Ptr<const JSON_Array> array, size_t index) {
+             ^
+./parson.h:170:15: note: previous declaration is here
+const char  * json_array_get_string (const JSON_Array *array, size_t index);
+              ^
+parson.c:1178:55: error: passing '_Ptr<const JSON_Array>' (aka '_Ptr<const struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    return json_value_get_string(json_array_get_value(array, index));
+                                                      ^~~~~
+./parson.h:169:56: note: passing argument to parameter 'array' here
+JSON_Value  * json_array_get_value  (const JSON_Array *array, size_t index);
+                                                       ^
+parson.c:1181:8: error: conflicting types for 'json_array_get_number'
+double json_array_get_number(_Ptr<const JSON_Array> array, size_t index) {
+       ^
+./parson.h:173:15: note: previous declaration is here
+double        json_array_get_number (const JSON_Array *array, size_t index); /* returns 0 on fail */
+              ^
+parson.c:1182:55: error: passing '_Ptr<const JSON_Array>' (aka '_Ptr<const struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    return json_value_get_number(json_array_get_value(array, index));
+                                                      ^~~~~
+./parson.h:169:56: note: passing argument to parameter 'array' here
+JSON_Value  * json_array_get_value  (const JSON_Array *array, size_t index);
+                                                       ^
+parson.c:1185:15: error: conflicting types for 'json_array_get_object'
+JSON_Object * json_array_get_object(_Ptr<const JSON_Array> array, size_t index) {
+              ^
+./parson.h:171:15: note: previous declaration is here
+JSON_Object * json_array_get_object (const JSON_Array *array, size_t index);
+              ^
+parson.c:1186:55: error: passing '_Ptr<const JSON_Array>' (aka '_Ptr<const struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    return json_value_get_object(json_array_get_value(array, index));
+                                                      ^~~~~
+./parson.h:169:56: note: passing argument to parameter 'array' here
+JSON_Value  * json_array_get_value  (const JSON_Array *array, size_t index);
+                                                       ^
+parson.c:1189:14: error: conflicting types for 'json_array_get_array'
+JSON_Array * json_array_get_array(_Ptr<const JSON_Array> array, size_t index) {
+             ^
+./parson.h:172:15: note: previous declaration is here
+JSON_Array  * json_array_get_array  (const JSON_Array *array, size_t index);
+              ^
+parson.c:1190:54: error: passing '_Ptr<const JSON_Array>' (aka '_Ptr<const struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    return json_value_get_array(json_array_get_value(array, index));
+                                                     ^~~~~
+./parson.h:169:56: note: passing argument to parameter 'array' here
+JSON_Value  * json_array_get_value  (const JSON_Array *array, size_t index);
+                                                       ^
+parson.c:1193:5: error: conflicting types for 'json_array_get_boolean'
+int json_array_get_boolean(_Ptr<const JSON_Array> array, size_t index) {
+    ^
+./parson.h:174:15: note: previous declaration is here
+int           json_array_get_boolean(const JSON_Array *array, size_t index); /* returns -1 on fail */
+              ^
+parson.c:1194:56: error: passing '_Ptr<const JSON_Array>' (aka '_Ptr<const struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    return json_value_get_boolean(json_array_get_value(array, index));
+                                                       ^~~~~
+./parson.h:169:56: note: passing argument to parameter 'array' here
+JSON_Value  * json_array_get_value  (const JSON_Array *array, size_t index);
+                                                       ^
+parson.c:1197:8: error: conflicting types for 'json_array_get_count'
+size_t json_array_get_count(_Ptr<const JSON_Array> array) {
+       ^
+./parson.h:175:15: note: previous declaration is here
+size_t        json_array_get_count  (const JSON_Array *array);
+              ^
+parson.c:1201:14: error: conflicting types for 'json_array_get_wrapping_value'
+JSON_Value * json_array_get_wrapping_value(_Ptr<const JSON_Array> array) {
+             ^
+./parson.h:176:15: note: previous declaration is here
+JSON_Value  * json_array_get_wrapping_value(const JSON_Array *array);
+              ^
+parson.c:1206:17: error: conflicting types for 'json_value_get_type'
+JSON_Value_Type json_value_get_type(_Ptr<const JSON_Value> value) {
+                ^
+./parson.h:214:17: note: previous declaration is here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                ^
+parson.c:1210:15: error: conflicting types for 'json_value_get_object'
+JSON_Object * json_value_get_object(_Ptr<const JSON_Value> value) {
+              ^
+./parson.h:215:17: note: previous declaration is here
+JSON_Object *   json_value_get_object (const JSON_Value *value);
+                ^
+parson.c:1211:32: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    return json_value_get_type(value) == JSONObject ? value->value.object : NULL;
+                               ^~~~~
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1214:14: error: conflicting types for 'json_value_get_array'
+JSON_Array * json_value_get_array(_Ptr<const JSON_Value> value) {
+             ^
+./parson.h:216:17: note: previous declaration is here
+JSON_Array  *   json_value_get_array  (const JSON_Value *value);
+                ^
+parson.c:1215:32: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    return json_value_get_type(value) == JSONArray ? value->value.array : NULL;
+                               ^~~~~
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1218:14: error: conflicting types for 'json_value_get_string'
+const char * json_value_get_string(_Ptr<const JSON_Value> value) {
+             ^
+./parson.h:217:17: note: previous declaration is here
+const char  *   json_value_get_string (const JSON_Value *value);
+                ^
+parson.c:1219:32: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    return json_value_get_type(value) == JSONString ? value->value.string : NULL;
+                               ^~~~~
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1222:8: error: conflicting types for 'json_value_get_number'
+double json_value_get_number(_Ptr<const JSON_Value> value) {
+       ^
+./parson.h:218:17: note: previous declaration is here
+double          json_value_get_number (const JSON_Value *value);
+                ^
+parson.c:1223:32: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    return json_value_get_type(value) == JSONNumber ? value->value.number : 0;
+                               ^~~~~
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1226:5: error: conflicting types for 'json_value_get_boolean'
+int json_value_get_boolean(_Ptr<const JSON_Value> value) {
+    ^
+./parson.h:219:17: note: previous declaration is here
+int             json_value_get_boolean(const JSON_Value *value);
+                ^
+parson.c:1227:32: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    return json_value_get_type(value) == JSONBoolean ? value->value.boolean : -1;
+                               ^~~~~
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1230:14: error: conflicting types for 'json_value_get_parent'
+JSON_Value * json_value_get_parent (_Ptr<const JSON_Value> value) {
+             ^
+./parson.h:220:17: note: previous declaration is here
+JSON_Value  *   json_value_get_parent (const JSON_Value *value);
+                ^
+parson.c:1234:6: error: conflicting types for 'json_value_free'
+void json_value_free(_Ptr<JSON_Value> value) {
+     ^
+./parson.h:212:14: note: previous declaration is here
+void         json_value_free        (JSON_Value *value);
+             ^
+parson.c:1235:33: error: passing '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    switch (json_value_get_type(value)) {
+                                ^~~~~
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1248:17: error: passing '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>') to parameter of incompatible type 'void *'
+    parson_free(value);
+                ^~~~~
+parson.c:1258:29: error: assigning to 'JSON_Object *' (aka 'struct json_object_t *') from incompatible type '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>')
+    new_value->value.object = json_object_init(new_value);
+                            ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:1273:28: error: assigning to 'JSON_Array *' (aka 'struct json_array_t *') from incompatible type '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>')
+    new_value->value.array = json_array_init(new_value);
+                           ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:1281:14: error: conflicting types for 'json_value_init_string'
+JSON_Value * json_value_init_string(_Ptr<const char> string) {
+             ^
+./parson.h:207:14: note: previous declaration is here
+JSON_Value * json_value_init_string (const char *string); /* copies passed string */
+             ^
+parson.c:1288:25: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    string_len = strlen(string);
+                        ^~~~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:143:27: note: passing argument to parameter 's' here
+size_t strlen(const char *s : itype(_Nt_array_ptr<const char>));
+                          ^
+parson.c:1292:10: error: assigning to 'char *' from incompatible type '_Ptr<char>'
+    copy = parson_strndup(string, string_len);
+         ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:1296:11: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
+    value = json_value_init_string_no_copy(copy);
+          ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:1339:14: error: conflicting types for 'json_value_deep_copy'
+JSON_Value * json_value_deep_copy(_Ptr<const JSON_Value> value) {
+             ^
+./parson.h:211:14: note: previous declaration is here
+JSON_Value * json_value_deep_copy   (const JSON_Value *value);
+             ^
+parson.c:1347:33: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    switch (json_value_get_type(value)) {
+                                ^~~~~
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1418:8: error: conflicting types for 'json_serialization_size'
+size_t json_serialization_size(_Ptr<const JSON_Value> value) {
+       ^
+./parson.h:78:13: note: previous declaration is here
+size_t      json_serialization_size(const JSON_Value *value); /* returns 0 on fail */
+            ^
+parson.c:1424:13: error: conflicting types for 'json_serialize_to_buffer'
+JSON_Status json_serialize_to_buffer(_Ptr<const JSON_Value> value, _Ptr<char> buf, size_t buf_size_in_bytes) {
+            ^
+./parson.h:79:13: note: previous declaration is here
+JSON_Status json_serialize_to_buffer(const JSON_Value *value, char *buf, size_t buf_size_in_bytes);
+            ^
+parson.c:1426:59: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    size_t needed_size_in_bytes = json_serialization_size(value);
+                                                          ^~~~~
+./parson.h:78:55: note: passing argument to parameter 'value' here
+size_t      json_serialization_size(const JSON_Value *value); /* returns 0 on fail */
+                                                      ^
+parson.c:1437:13: error: conflicting types for 'json_serialize_to_file'
+JSON_Status json_serialize_to_file(_Ptr<const JSON_Value> value, _Ptr<const char> filename) {
+            ^
+./parson.h:80:13: note: previous declaration is here
+JSON_Status json_serialize_to_file(const JSON_Value *value, const char *filename);
+            ^
+parson.c:1440:56: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    char *serialized_string = json_serialize_to_string(value);
+                                                       ^~~~~
+./parson.h:81:56: note: passing argument to parameter 'value' here
+char *      json_serialize_to_string(const JSON_Value *value);
+                                                       ^
+parson.c:1444:17: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    fp = fopen (filename, "w");
+                ^~~~~~~~
+/usr/local/lib/clang/6.0.0/include/stdio_checked.h:33:35: note: passing argument to parameter 'filename' here
+FILE *fopen(const char * restrict filename : itype(restrict _Nt_array_ptr<const char>),
+                                  ^
+parson.c:1459:8: error: conflicting types for 'json_serialize_to_string'
+char * json_serialize_to_string(_Ptr<const JSON_Value> value) {
+       ^
+./parson.h:81:13: note: previous declaration is here
+char *      json_serialize_to_string(const JSON_Value *value);
+            ^
+parson.c:1461:53: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    size_t buf_size_bytes = json_serialization_size(value);
+                                                    ^~~~~
+./parson.h:78:55: note: passing argument to parameter 'value' here
+size_t      json_serialization_size(const JSON_Value *value); /* returns 0 on fail */
+                                                      ^
+parson.c:1470:53: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    serialization_result = json_serialize_to_buffer(value, buf, buf_size_bytes);
+                                                    ^~~~~
+./parson.h:79:56: note: passing argument to parameter 'value' here
+JSON_Status json_serialize_to_buffer(const JSON_Value *value, char *buf, size_t buf_size_in_bytes);
+                                                       ^
+parson.c:1478:8: error: conflicting types for 'json_serialization_size_pretty'
+size_t json_serialization_size_pretty(_Ptr<const JSON_Value> value) {
+       ^
+./parson.h:84:13: note: previous declaration is here
+size_t      json_serialization_size_pretty(const JSON_Value *value); /* returns 0 on fail */
+            ^
+parson.c:1484:13: error: conflicting types for 'json_serialize_to_buffer_pretty'
+JSON_Status json_serialize_to_buffer_pretty(_Ptr<const JSON_Value> value, _Ptr<char> buf, size_t buf_size_in_bytes) {
+            ^
+./parson.h:85:13: note: previous declaration is here
+JSON_Status json_serialize_to_buffer_pretty(const JSON_Value *value, char *buf, size_t buf_size_in_bytes);
+            ^
+parson.c:1486:66: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    size_t needed_size_in_bytes = json_serialization_size_pretty(value);
+                                                                 ^~~~~
+./parson.h:84:62: note: passing argument to parameter 'value' here
+size_t      json_serialization_size_pretty(const JSON_Value *value); /* returns 0 on fail */
+                                                             ^
+parson.c:1497:13: error: conflicting types for 'json_serialize_to_file_pretty'
+JSON_Status json_serialize_to_file_pretty(_Ptr<const JSON_Value> value, _Ptr<const char> filename) {
+            ^
+./parson.h:86:13: note: previous declaration is here
+JSON_Status json_serialize_to_file_pretty(const JSON_Value *value, const char *filename);
+            ^
+parson.c:1500:63: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    char *serialized_string = json_serialize_to_string_pretty(value);
+                                                              ^~~~~
+./parson.h:87:63: note: passing argument to parameter 'value' here
+char *      json_serialize_to_string_pretty(const JSON_Value *value);
+                                                              ^
+parson.c:1504:17: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    fp = fopen (filename, "w");
+                ^~~~~~~~
+/usr/local/lib/clang/6.0.0/include/stdio_checked.h:33:35: note: passing argument to parameter 'filename' here
+FILE *fopen(const char * restrict filename : itype(restrict _Nt_array_ptr<const char>),
+                                  ^
+parson.c:1519:8: error: conflicting types for 'json_serialize_to_string_pretty'
+char * json_serialize_to_string_pretty(_Ptr<const JSON_Value> value) {
+       ^
+./parson.h:87:13: note: previous declaration is here
+char *      json_serialize_to_string_pretty(const JSON_Value *value);
+            ^
+parson.c:1521:60: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    size_t buf_size_bytes = json_serialization_size_pretty(value);
+                                                           ^~~~~
+./parson.h:84:62: note: passing argument to parameter 'value' here
+size_t      json_serialization_size_pretty(const JSON_Value *value); /* returns 0 on fail */
+                                                             ^
+parson.c:1530:60: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    serialization_result = json_serialize_to_buffer_pretty(value, buf, buf_size_bytes);
+                                                           ^~~~~
+./parson.h:85:63: note: passing argument to parameter 'value' here
+JSON_Status json_serialize_to_buffer_pretty(const JSON_Value *value, char *buf, size_t buf_size_in_bytes);
+                                                              ^
+parson.c:1538:6: error: conflicting types for 'json_free_serialized_string'
+void json_free_serialized_string(_Ptr<char> string) {
+     ^
+./parson.h:89:13: note: previous declaration is here
+void        json_free_serialized_string(char *string); /* frees string from json_serialize_to_string and json_serialize_to_string_pretty */
+            ^
+parson.c:1539:17: error: passing '_Ptr<char>' to parameter of incompatible type 'void *'
+    parson_free(string);
+                ^~~~~~
+parson.c:1542:13: error: conflicting types for 'json_array_remove'
+JSON_Status json_array_remove(_Ptr<JSON_Array> array, size_t ix) {
+            ^
+./parson.h:180:13: note: previous declaration is here
+JSON_Status json_array_remove(JSON_Array *array, size_t i);
+            ^
+parson.c:1544:53: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    if (array == NULL || ix >= json_array_get_count(array)) {
+                                                    ^~~~~
+./parson.h:175:56: note: passing argument to parameter 'array' here
+size_t        json_array_get_count  (const JSON_Array *array);
+                                                       ^
+parson.c:1547:42: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    json_value_free(json_array_get_value(array, ix));
+                                         ^~~~~
+./parson.h:169:56: note: passing argument to parameter 'array' here
+JSON_Value  * json_array_get_value  (const JSON_Array *array, size_t index);
+                                                       ^
+parson.c:1548:43: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    to_move_bytes = (json_array_get_count(array) - 1 - ix) * sizeof(JSON_Value*);
+                                          ^~~~~
+./parson.h:175:56: note: passing argument to parameter 'array' here
+size_t        json_array_get_count  (const JSON_Array *array);
+                                                       ^
+parson.c:1554:13: error: conflicting types for 'json_array_replace_value'
+JSON_Status json_array_replace_value(_Ptr<JSON_Array> array, size_t ix, _Ptr<JSON_Value> value) {
+            ^
+./parson.h:185:13: note: previous declaration is here
+JSON_Status json_array_replace_value(JSON_Array *array, size_t i, JSON_Value *value);
+            ^
+parson.c:1555:95: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    if (array == NULL || value == NULL || value->parent != NULL || ix >= json_array_get_count(array)) {
+                                                                                              ^~~~~
+./parson.h:175:56: note: passing argument to parameter 'array' here
+size_t        json_array_get_count  (const JSON_Array *array);
+                                                       ^
+parson.c:1558:42: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    json_value_free(json_array_get_value(array, ix));
+                                         ^~~~~
+./parson.h:169:56: note: passing argument to parameter 'array' here
+JSON_Value  * json_array_get_value  (const JSON_Array *array, size_t index);
+                                                       ^
+parson.c:1559:51: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    value->parent = json_array_get_wrapping_value(array);
+                                                  ^~~~~
+./parson.h:176:63: note: passing argument to parameter 'array' here
+JSON_Value  * json_array_get_wrapping_value(const JSON_Array *array);
+                                                              ^
+parson.c:1560:22: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
+    array->items[ix] = value;
+                     ^ ~~~~~
+parson.c:1564:13: error: conflicting types for 'json_array_replace_string'
+JSON_Status json_array_replace_string(_Ptr<JSON_Array> array, size_t i, _Ptr<const char> string) {
+            ^
+./parson.h:186:13: note: previous declaration is here
+JSON_Status json_array_replace_string(JSON_Array *array, size_t i, const char* string);
+            ^
+parson.c:1565:48: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    JSON_Value *value = json_value_init_string(string);
+                                               ^~~~~~
+./parson.h:207:50: note: passing argument to parameter 'string' here
+JSON_Value * json_value_init_string (const char *string); /* copies passed string */
+                                                 ^
+parson.c:1569:34: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'JSON_Array *' (aka 'struct json_array_t *')
+    if (json_array_replace_value(array, i, value) == JSONFailure) {
+                                 ^~~~~
+./parson.h:185:50: note: passing argument to parameter 'array' here
+JSON_Status json_array_replace_value(JSON_Array *array, size_t i, JSON_Value *value);
+                                                 ^
+parson.c:1576:13: error: conflicting types for 'json_array_replace_number'
+JSON_Status json_array_replace_number(_Ptr<JSON_Array> array, size_t i, double number) {
+            ^
+./parson.h:187:13: note: previous declaration is here
+JSON_Status json_array_replace_number(JSON_Array *array, size_t i, double number);
+            ^
+parson.c:1581:34: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'JSON_Array *' (aka 'struct json_array_t *')
+    if (json_array_replace_value(array, i, value) == JSONFailure) {
+                                 ^~~~~
+./parson.h:185:50: note: passing argument to parameter 'array' here
+JSON_Status json_array_replace_value(JSON_Array *array, size_t i, JSON_Value *value);
+                                                 ^
+parson.c:1588:13: error: conflicting types for 'json_array_replace_boolean'
+JSON_Status json_array_replace_boolean(_Ptr<JSON_Array> array, size_t i, int boolean) {
+            ^
+./parson.h:188:13: note: previous declaration is here
+JSON_Status json_array_replace_boolean(JSON_Array *array, size_t i, int boolean);
+            ^
+parson.c:1593:34: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'JSON_Array *' (aka 'struct json_array_t *')
+    if (json_array_replace_value(array, i, value) == JSONFailure) {
+                                 ^~~~~
+./parson.h:185:50: note: passing argument to parameter 'array' here
+JSON_Status json_array_replace_value(JSON_Array *array, size_t i, JSON_Value *value);
+                                                 ^
+parson.c:1600:13: error: conflicting types for 'json_array_replace_null'
+JSON_Status json_array_replace_null(_Ptr<JSON_Array> array, size_t i) {
+            ^
+./parson.h:189:13: note: previous declaration is here
+JSON_Status json_array_replace_null(JSON_Array *array, size_t i);
+            ^
+parson.c:1605:34: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'JSON_Array *' (aka 'struct json_array_t *')
+    if (json_array_replace_value(array, i, value) == JSONFailure) {
+                                 ^~~~~
+./parson.h:185:50: note: passing argument to parameter 'array' here
+JSON_Status json_array_replace_value(JSON_Array *array, size_t i, JSON_Value *value);
+                                                 ^
+parson.c:1612:13: error: conflicting types for 'json_array_clear'
+JSON_Status json_array_clear(_Ptr<JSON_Array> array) {
+            ^
+./parson.h:192:13: note: previous declaration is here
+JSON_Status json_array_clear(JSON_Array *array);
+            ^
+parson.c:1617:42: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+    for (i = 0; i < json_array_get_count(array); i++) {
+                                         ^~~~~
+./parson.h:175:56: note: passing argument to parameter 'array' here
+size_t        json_array_get_count  (const JSON_Array *array);
+                                                       ^
+parson.c:1618:46: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'const JSON_Array *' (aka 'const struct json_array_t *')
+        json_value_free(json_array_get_value(array, i));
+                                             ^~~~~
+./parson.h:169:56: note: passing argument to parameter 'array' here
+JSON_Value  * json_array_get_value  (const JSON_Array *array, size_t index);
+                                                       ^
+parson.c:1624:13: error: conflicting types for 'json_array_append_value'
+JSON_Status json_array_append_value(_Ptr<JSON_Array> array, _Ptr<JSON_Value> value) {
+            ^
+./parson.h:196:13: note: previous declaration is here
+JSON_Status json_array_append_value(JSON_Array *array, JSON_Value *value);
+            ^
+parson.c:1631:13: error: conflicting types for 'json_array_append_string'
+JSON_Status json_array_append_string(_Ptr<JSON_Array> array, _Ptr<const char> string) {
+            ^
+./parson.h:197:13: note: previous declaration is here
+JSON_Status json_array_append_string(JSON_Array *array, const char *string);
+            ^
+parson.c:1632:48: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    JSON_Value *value = json_value_init_string(string);
+                                               ^~~~~~
+./parson.h:207:50: note: passing argument to parameter 'string' here
+JSON_Value * json_value_init_string (const char *string); /* copies passed string */
+                                                 ^
+parson.c:1636:33: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'JSON_Array *' (aka 'struct json_array_t *')
+    if (json_array_append_value(array, value) == JSONFailure) {
+                                ^~~~~
+./parson.h:196:49: note: passing argument to parameter 'array' here
+JSON_Status json_array_append_value(JSON_Array *array, JSON_Value *value);
+                                                ^
+parson.c:1643:13: error: conflicting types for 'json_array_append_number'
+JSON_Status json_array_append_number(_Ptr<JSON_Array> array, double number) {
+            ^
+./parson.h:198:13: note: previous declaration is here
+JSON_Status json_array_append_number(JSON_Array *array, double number);
+            ^
+parson.c:1648:33: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'JSON_Array *' (aka 'struct json_array_t *')
+    if (json_array_append_value(array, value) == JSONFailure) {
+                                ^~~~~
+./parson.h:196:49: note: passing argument to parameter 'array' here
+JSON_Status json_array_append_value(JSON_Array *array, JSON_Value *value);
+                                                ^
+parson.c:1655:13: error: conflicting types for 'json_array_append_boolean'
+JSON_Status json_array_append_boolean(_Ptr<JSON_Array> array, int boolean) {
+            ^
+./parson.h:199:13: note: previous declaration is here
+JSON_Status json_array_append_boolean(JSON_Array *array, int boolean);
+            ^
+parson.c:1660:33: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'JSON_Array *' (aka 'struct json_array_t *')
+    if (json_array_append_value(array, value) == JSONFailure) {
+                                ^~~~~
+./parson.h:196:49: note: passing argument to parameter 'array' here
+JSON_Status json_array_append_value(JSON_Array *array, JSON_Value *value);
+                                                ^
+parson.c:1667:13: error: conflicting types for 'json_array_append_null'
+JSON_Status json_array_append_null(_Ptr<JSON_Array> array) {
+            ^
+./parson.h:200:13: note: previous declaration is here
+JSON_Status json_array_append_null(JSON_Array *array);
+            ^
+parson.c:1672:33: error: passing '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>') to parameter of incompatible type 'JSON_Array *' (aka 'struct json_array_t *')
+    if (json_array_append_value(array, value) == JSONFailure) {
+                                ^~~~~
+./parson.h:196:49: note: passing argument to parameter 'array' here
+JSON_Status json_array_append_value(JSON_Array *array, JSON_Value *value);
+                                                ^
+parson.c:1679:13: error: conflicting types for 'json_object_set_value'
+JSON_Status json_object_set_value(_Ptr<JSON_Object> object, _Ptr<const char> name, _Ptr<JSON_Value> value) {
+            ^
+./parson.h:143:13: note: previous declaration is here
+JSON_Status json_object_set_value(JSON_Object *object, const char *name, JSON_Value *value);
+            ^
+parson.c:1685:39: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    old_value = json_object_get_value(object, name);
+                                      ^~~~~~
+./parson.h:109:58: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1688:47: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+        for (i = 0; i < json_object_get_count(object); i++) {
+                                              ^~~~~~
+./parson.h:128:59: note: passing argument to parameter 'object' here
+size_t        json_object_get_count   (const JSON_Object *object);
+                                                          ^
+parson.c:1689:42: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+            if (strcmp(object->names[i], name) == 0) {
+                                         ^~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:107:24: note: passing argument to parameter 'src2' here
+           const char *src2 : itype(_Nt_array_ptr<const char>));
+                       ^
+parson.c:1690:64: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+                value->parent = json_object_get_wrapping_value(object);
+                                                               ^~~~~~
+./parson.h:131:65: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_wrapping_value(const JSON_Object *object);
+                                                                ^
+parson.c:1691:35: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
+                object->values[i] = value;
+                                  ^ ~~~~~
+parson.c:1700:13: error: conflicting types for 'json_object_set_string'
+JSON_Status json_object_set_string(_Ptr<JSON_Object> object, _Ptr<const char> name, _Ptr<const char> string) {
+            ^
+./parson.h:144:13: note: previous declaration is here
+JSON_Status json_object_set_string(JSON_Object *object, const char *name, const char *string);
+            ^
+parson.c:1701:71: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    return json_object_set_value(object, name, json_value_init_string(string));
+                                                                      ^~~~~~
+./parson.h:207:50: note: passing argument to parameter 'string' here
+JSON_Value * json_value_init_string (const char *string); /* copies passed string */
+                                                 ^
+parson.c:1704:13: error: conflicting types for 'json_object_set_number'
+JSON_Status json_object_set_number(_Ptr<JSON_Object> object, _Ptr<const char> name, double number) {
+            ^
+./parson.h:145:13: note: previous declaration is here
+JSON_Status json_object_set_number(JSON_Object *object, const char *name, double number);
+            ^
+parson.c:1705:34: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'JSON_Object *' (aka 'struct json_object_t *')
+    return json_object_set_value(object, name, json_value_init_number(number));
+                                 ^~~~~~
+./parson.h:143:48: note: passing argument to parameter 'object' here
+JSON_Status json_object_set_value(JSON_Object *object, const char *name, JSON_Value *value);
+                                               ^
+parson.c:1708:13: error: conflicting types for 'json_object_set_boolean'
+JSON_Status json_object_set_boolean(_Ptr<JSON_Object> object, _Ptr<const char> name, int boolean) {
+            ^
+./parson.h:146:13: note: previous declaration is here
+JSON_Status json_object_set_boolean(JSON_Object *object, const char *name, int boolean);
+            ^
+parson.c:1709:34: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'JSON_Object *' (aka 'struct json_object_t *')
+    return json_object_set_value(object, name, json_value_init_boolean(boolean));
+                                 ^~~~~~
+./parson.h:143:48: note: passing argument to parameter 'object' here
+JSON_Status json_object_set_value(JSON_Object *object, const char *name, JSON_Value *value);
+                                               ^
+parson.c:1712:13: error: conflicting types for 'json_object_set_null'
+JSON_Status json_object_set_null(_Ptr<JSON_Object> object, _Ptr<const char> name) {
+            ^
+./parson.h:147:13: note: previous declaration is here
+JSON_Status json_object_set_null(JSON_Object *object, const char *name);
+            ^
+parson.c:1713:34: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'JSON_Object *' (aka 'struct json_object_t *')
+    return json_object_set_value(object, name, json_value_init_null());
+                                 ^~~~~~
+./parson.h:143:48: note: passing argument to parameter 'object' here
+JSON_Status json_object_set_value(JSON_Object *object, const char *name, JSON_Value *value);
+                                               ^
+parson.c:1716:13: error: conflicting types for 'json_object_dotset_value'
+JSON_Status json_object_dotset_value(_Ptr<JSON_Object> object, _Ptr<const char> name, _Ptr<JSON_Value> value) {
+            ^
+./parson.h:151:13: note: previous declaration is here
+JSON_Status json_object_dotset_value(JSON_Object *object, const char *name, JSON_Value *value);
+            ^
+parson.c:1724:22: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    dot_pos = strchr(name, '.');
+                     ^~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:122:26: note: passing argument to parameter 's' here
+char *strchr(const char *s : itype(_Nt_array_ptr<const char>), int c) :
+                         ^
+parson.c:1726:38: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'JSON_Object *' (aka 'struct json_object_t *')
+        return json_object_set_value(object, name, value);
+                                     ^~~~~~
+./parson.h:143:48: note: passing argument to parameter 'object' here
+JSON_Status json_object_set_value(JSON_Object *object, const char *name, JSON_Value *value);
+                                               ^
+parson.c:1728:22: error: assigning to 'char *' from incompatible type '_Ptr<char>'
+        current_name = parson_strndup(name, dot_pos - name);
+                     ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:1729:43: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+        temp_obj = json_object_get_object(object, current_name);
+                                          ^~~~~~
+./parson.h:111:58: note: passing argument to parameter 'object' here
+JSON_Object * json_object_get_object (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1741:47: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+            temp_obj = json_object_get_object(object, current_name);
+                                              ^~~~~~
+./parson.h:111:58: note: passing argument to parameter 'object' here
+JSON_Object * json_object_get_object (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1744:64: error: passing '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>') to parameter of incompatible type 'JSON_Value *' (aka 'struct json_value_t *')
+        return json_object_dotset_value(temp_obj, dot_pos + 1, value);
+                                                               ^~~~~
+./parson.h:151:89: note: passing argument to parameter 'value' here
+JSON_Status json_object_dotset_value(JSON_Object *object, const char *name, JSON_Value *value);
+                                                                                        ^
+parson.c:1736:41: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+            if (json_object_add(object, current_name, new_value) == JSONFailure) {
+                                        ^~~~~~~~~~~~
+parson.c:1736:55: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
+            if (json_object_add(object, current_name, new_value) == JSONFailure) {
+                                                      ^~~~~~~~~
+parson.c:1748:13: error: conflicting types for 'json_object_dotset_string'
+JSON_Status json_object_dotset_string(_Ptr<JSON_Object> object, _Ptr<const char> name, _Ptr<const char> string) {
+            ^
+./parson.h:152:13: note: previous declaration is here
+JSON_Status json_object_dotset_string(JSON_Object *object, const char *name, const char *string);
+            ^
+parson.c:1749:48: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    JSON_Value *value = json_value_init_string(string);
+                                               ^~~~~~
+./parson.h:207:50: note: passing argument to parameter 'string' here
+JSON_Value * json_value_init_string (const char *string); /* copies passed string */
+                                                 ^
+parson.c:1753:34: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'JSON_Object *' (aka 'struct json_object_t *')
+    if (json_object_dotset_value(object, name, value) == JSONFailure) {
+                                 ^~~~~~
+./parson.h:151:51: note: passing argument to parameter 'object' here
+JSON_Status json_object_dotset_value(JSON_Object *object, const char *name, JSON_Value *value);
+                                                  ^
+parson.c:1760:13: error: conflicting types for 'json_object_dotset_number'
+JSON_Status json_object_dotset_number(_Ptr<JSON_Object> object, _Ptr<const char> name, double number) {
+            ^
+./parson.h:153:13: note: previous declaration is here
+JSON_Status json_object_dotset_number(JSON_Object *object, const char *name, double number);
+            ^
+parson.c:1765:34: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'JSON_Object *' (aka 'struct json_object_t *')
+    if (json_object_dotset_value(object, name, value) == JSONFailure) {
+                                 ^~~~~~
+./parson.h:151:51: note: passing argument to parameter 'object' here
+JSON_Status json_object_dotset_value(JSON_Object *object, const char *name, JSON_Value *value);
+                                                  ^
+parson.c:1772:13: error: conflicting types for 'json_object_dotset_boolean'
+JSON_Status json_object_dotset_boolean(_Ptr<JSON_Object> object, _Ptr<const char> name, int boolean) {
+            ^
+./parson.h:154:13: note: previous declaration is here
+JSON_Status json_object_dotset_boolean(JSON_Object *object, const char *name, int boolean);
+            ^
+parson.c:1777:34: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'JSON_Object *' (aka 'struct json_object_t *')
+    if (json_object_dotset_value(object, name, value) == JSONFailure) {
+                                 ^~~~~~
+./parson.h:151:51: note: passing argument to parameter 'object' here
+JSON_Status json_object_dotset_value(JSON_Object *object, const char *name, JSON_Value *value);
+                                                  ^
+parson.c:1784:13: error: conflicting types for 'json_object_dotset_null'
+JSON_Status json_object_dotset_null(_Ptr<JSON_Object> object, _Ptr<const char> name) {
+            ^
+./parson.h:155:13: note: previous declaration is here
+JSON_Status json_object_dotset_null(JSON_Object *object, const char *name);
+            ^
+parson.c:1789:34: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'JSON_Object *' (aka 'struct json_object_t *')
+    if (json_object_dotset_value(object, name, value) == JSONFailure) {
+                                 ^~~~~~
+./parson.h:151:51: note: passing argument to parameter 'object' here
+JSON_Status json_object_dotset_value(JSON_Object *object, const char *name, JSON_Value *value);
+                                                  ^
+parson.c:1796:13: error: conflicting types for 'json_object_remove'
+JSON_Status json_object_remove(_Ptr<JSON_Object> object, _Ptr<const char> name) {
+            ^
+./parson.h:158:13: note: previous declaration is here
+JSON_Status json_object_remove(JSON_Object *object, const char *name);
+            ^
+parson.c:1798:49: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    if (object == NULL || json_object_get_value(object, name) == NULL) {
+                                                ^~~~~~
+./parson.h:109:58: note: passing argument to parameter 'object' here
+JSON_Value  * json_object_get_value  (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1801:45: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    last_item_index = json_object_get_count(object) - 1;
+                                            ^~~~~~
+./parson.h:128:59: note: passing argument to parameter 'object' here
+size_t        json_object_get_count   (const JSON_Object *object);
+                                                          ^
+parson.c:1802:43: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    for (i = 0; i < json_object_get_count(object); i++) {
+                                          ^~~~~~
+./parson.h:128:59: note: passing argument to parameter 'object' here
+size_t        json_object_get_count   (const JSON_Object *object);
+                                                          ^
+parson.c:1803:38: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+        if (strcmp(object->names[i], name) == 0) {
+                                     ^~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:107:24: note: passing argument to parameter 'src2' here
+           const char *src2 : itype(_Nt_array_ptr<const char>));
+                       ^
+parson.c:1817:13: error: conflicting types for 'json_object_dotremove'
+JSON_Status json_object_dotremove(_Ptr<JSON_Object> object, _Ptr<const char> name) {
+            ^
+./parson.h:161:13: note: previous declaration is here
+JSON_Status json_object_dotremove(JSON_Object *object, const char *key);
+            ^
+parson.c:1818:34: error: passing '_Ptr<const char>' to parameter of incompatible type 'const char *'
+    const char *dot_pos = strchr(name, '.');
+                                 ^~~~
+/usr/local/lib/clang/6.0.0/include/string_checked.h:122:26: note: passing argument to parameter 's' here
+char *strchr(const char *s : itype(_Nt_array_ptr<const char>), int c) :
+                         ^
+parson.c:1822:35: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'JSON_Object *' (aka 'struct json_object_t *')
+        return json_object_remove(object, name);
+                                  ^~~~~~
+./parson.h:158:45: note: passing argument to parameter 'object' here
+JSON_Status json_object_remove(JSON_Object *object, const char *name);
+                                            ^
+parson.c:1824:22: error: assigning to 'char *' from incompatible type '_Ptr<char>'
+        current_name = parson_strndup(name, dot_pos - name);
+                     ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+parson.c:1825:43: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+        temp_obj = json_object_get_object(object, current_name);
+                                          ^~~~~~
+./parson.h:111:58: note: passing argument to parameter 'object' here
+JSON_Object * json_object_get_object (const JSON_Object *object, const char *name);
+                                                         ^
+parson.c:1834:13: error: conflicting types for 'json_object_clear'
+JSON_Status json_object_clear(_Ptr<JSON_Object> object) {
+            ^
+./parson.h:164:13: note: previous declaration is here
+JSON_Status json_object_clear(JSON_Object *object);
+            ^
+parson.c:1839:43: error: passing '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>') to parameter of incompatible type 'const JSON_Object *' (aka 'const struct json_object_t *')
+    for (i = 0; i < json_object_get_count(object); i++) {
+                                          ^~~~~~
+./parson.h:128:59: note: passing argument to parameter 'object' here
+size_t        json_object_get_count   (const JSON_Object *object);
+                                                          ^
+parson.c:1847:13: error: conflicting types for 'json_validate'
+JSON_Status json_validate(_Ptr<const JSON_Value> schema, _Ptr<const JSON_Value> value) {
+            ^
+./parson.h:104:13: note: previous declaration is here
+JSON_Status json_validate(const JSON_Value *schema, const JSON_Value *value);
+            ^
+parson.c:1857:39: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    schema_type = json_value_get_type(schema);
+                                      ^~~~~~
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1858:38: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    value_type = json_value_get_type(value);
+                                     ^~~~~
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1864:49: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            schema_array = json_value_get_array(schema);
+                                                ^~~~~~
+./parson.h:216:58: note: passing argument to parameter 'value' here
+JSON_Array  *   json_value_get_array  (const JSON_Value *value);
+                                                         ^
+parson.c:1865:48: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            value_array = json_value_get_array(value);
+                                               ^~~~~
+./parson.h:216:58: note: passing argument to parameter 'value' here
+JSON_Array  *   json_value_get_array  (const JSON_Value *value);
+                                                         ^
+parson.c:1880:51: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            schema_object = json_value_get_object(schema);
+                                                  ^~~~~~
+./parson.h:215:58: note: passing argument to parameter 'value' here
+JSON_Object *   json_value_get_object (const JSON_Value *value);
+                                                         ^
+parson.c:1881:50: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            value_object = json_value_get_object(value);
+                                                 ^~~~~
+./parson.h:215:58: note: passing argument to parameter 'value' here
+JSON_Object *   json_value_get_object (const JSON_Value *value);
+                                                         ^
+parson.c:1907:5: error: conflicting types for 'json_value_equals'
+int json_value_equals(_Ptr<const JSON_Value> a, _Ptr<const JSON_Value> b) {
+    ^
+./parson.h:92:6: note: previous declaration is here
+int  json_value_equals(const JSON_Value *a, const JSON_Value *b);
+     ^
+parson.c:1914:34: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    a_type = json_value_get_type(a);
+                                 ^
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1915:34: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    b_type = json_value_get_type(b);
+                                 ^
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1921:44: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            a_array = json_value_get_array(a);
+                                           ^
+./parson.h:216:58: note: passing argument to parameter 'value' here
+JSON_Array  *   json_value_get_array  (const JSON_Value *value);
+                                                         ^
+parson.c:1922:44: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            b_array = json_value_get_array(b);
+                                           ^
+./parson.h:216:58: note: passing argument to parameter 'value' here
+JSON_Array  *   json_value_get_array  (const JSON_Value *value);
+                                                         ^
+parson.c:1936:46: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            a_object = json_value_get_object(a);
+                                             ^
+./parson.h:215:58: note: passing argument to parameter 'value' here
+JSON_Object *   json_value_get_object (const JSON_Value *value);
+                                                         ^
+parson.c:1937:46: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            b_object = json_value_get_object(b);
+                                             ^
+./parson.h:215:58: note: passing argument to parameter 'value' here
+JSON_Object *   json_value_get_object (const JSON_Value *value);
+                                                         ^
+parson.c:1952:46: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            a_string = json_value_get_string(a);
+                                             ^
+./parson.h:217:58: note: passing argument to parameter 'value' here
+const char  *   json_value_get_string (const JSON_Value *value);
+                                                         ^
+parson.c:1953:46: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            b_string = json_value_get_string(b);
+                                             ^
+./parson.h:217:58: note: passing argument to parameter 'value' here
+const char  *   json_value_get_string (const JSON_Value *value);
+                                                         ^
+parson.c:1959:43: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            return json_value_get_boolean(a) == json_value_get_boolean(b);
+                                          ^
+./parson.h:219:58: note: passing argument to parameter 'value' here
+int             json_value_get_boolean(const JSON_Value *value);
+                                                         ^
+parson.c:1959:72: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            return json_value_get_boolean(a) == json_value_get_boolean(b);
+                                                                       ^
+./parson.h:219:58: note: passing argument to parameter 'value' here
+int             json_value_get_boolean(const JSON_Value *value);
+                                                         ^
+parson.c:1961:47: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            return fabs(json_value_get_number(a) - json_value_get_number(b)) < 0.000001; /* EPSILON */
+                                              ^
+./parson.h:218:58: note: passing argument to parameter 'value' here
+double          json_value_get_number (const JSON_Value *value);
+                                                         ^
+parson.c:1961:74: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+            return fabs(json_value_get_number(a) - json_value_get_number(b)) < 0.000001; /* EPSILON */
+                                                                         ^
+./parson.h:218:58: note: passing argument to parameter 'value' here
+double          json_value_get_number (const JSON_Value *value);
+                                                         ^
+parson.c:1971:17: error: conflicting types for 'json_type'
+JSON_Value_Type json_type(_Ptr<const JSON_Value> value) {
+                ^
+./parson.h:223:17: note: previous declaration is here
+JSON_Value_Type json_type   (const JSON_Value *value);
+                ^
+parson.c:1972:32: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    return json_value_get_type(value);
+                               ^~~~~
+./parson.h:214:58: note: passing argument to parameter 'value' here
+JSON_Value_Type json_value_get_type   (const JSON_Value *value);
+                                                         ^
+parson.c:1975:15: error: conflicting types for 'json_object'
+JSON_Object * json_object (_Ptr<const JSON_Value> value) {
+              ^
+./parson.h:224:17: note: previous declaration is here
+JSON_Object *   json_object (const JSON_Value *value);
+                ^
+parson.c:1976:34: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    return json_value_get_object(value);
+                                 ^~~~~
+./parson.h:215:58: note: passing argument to parameter 'value' here
+JSON_Object *   json_value_get_object (const JSON_Value *value);
+                                                         ^
+parson.c:1979:14: error: conflicting types for 'json_array'
+JSON_Array * json_array  (_Ptr<const JSON_Value> value) {
+             ^
+./parson.h:225:17: note: previous declaration is here
+JSON_Array  *   json_array  (const JSON_Value *value);
+                ^
+parson.c:1980:33: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    return json_value_get_array(value);
+                                ^~~~~
+./parson.h:216:58: note: passing argument to parameter 'value' here
+JSON_Array  *   json_value_get_array  (const JSON_Value *value);
+                                                         ^
+parson.c:1983:14: error: conflicting types for 'json_string'
+const char * json_string (_Ptr<const JSON_Value> value) {
+             ^
+./parson.h:226:17: note: previous declaration is here
+const char  *   json_string (const JSON_Value *value);
+                ^
+parson.c:1984:34: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    return json_value_get_string(value);
+                                 ^~~~~
+./parson.h:217:58: note: passing argument to parameter 'value' here
+const char  *   json_value_get_string (const JSON_Value *value);
+                                                         ^
+parson.c:1987:8: error: conflicting types for 'json_number'
+double json_number (_Ptr<const JSON_Value> value) {
+       ^
+./parson.h:227:17: note: previous declaration is here
+double          json_number (const JSON_Value *value);
+                ^
+parson.c:1988:34: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    return json_value_get_number(value);
+                                 ^~~~~
+./parson.h:218:58: note: passing argument to parameter 'value' here
+double          json_value_get_number (const JSON_Value *value);
+                                                         ^
+parson.c:1991:5: error: conflicting types for 'json_boolean'
+int json_boolean(_Ptr<const JSON_Value> value) {
+    ^
+./parson.h:228:17: note: previous declaration is here
+int             json_boolean(const JSON_Value *value);
+                ^
+parson.c:1992:35: error: passing '_Ptr<const JSON_Value>' (aka '_Ptr<const struct json_value_t>') to parameter of incompatible type 'const JSON_Value *' (aka 'const struct json_value_t *')
+    return json_value_get_boolean(value);
+                                  ^~~~~
+./parson.h:219:58: note: passing argument to parameter 'value' here
+int             json_value_get_boolean(const JSON_Value *value);
+                                                         ^
+parson.c:1995:6: error: conflicting types for 'json_set_allocation_functions'
+void json_set_allocation_functions(_Ptr<void* (size_t )> malloc_fun, _Ptr<void (void* )> free_fun) {
+     ^
+./parson.h:61:6: note: previous declaration is here
+void json_set_allocation_functions(JSON_Malloc_Function malloc_fun, JSON_Free_Function free_fun);
+     ^
+parson.c:1996:19: error: assigning to 'JSON_Malloc_Function' (aka 'void *(*)(unsigned long)') from incompatible type '_Ptr<void *(size_t)>' (aka '_Ptr<void *(unsigned long)>')
+    parson_malloc = malloc_fun;
+                  ^ ~~~~~~~~~~
+parson.c:1997:17: error: assigning to 'JSON_Free_Function' (aka 'void (*)(void *)') from incompatible type '_Ptr<void (void *)>'
+    parson_free = free_fun;
+                ^ ~~~~~~~~
+10 warnings and 380 errors generated.
+make: *** [test] Error 1
