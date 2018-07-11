@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -O0 -g -Wall -Wextra -pedantic-errors -ferror-limit=1000
+CFLAGS = -O0 -g -Wall -Wextra -pedantic-errors -ferror-limit=10
 
 
 all: test testchecked
