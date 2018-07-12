@@ -1,335 +1,57 @@
-parson.checked.c:126:1: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
-JSON_Valueparse_boolean_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
-^
-parson.checked.c:126:88: error: interface type only allowed for a pointer return type
-JSON_Valueparse_boolean_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
-                                                                                       ^
-parson.checked.c:127:1: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
-JSON_Valueparse_number_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
-^
-parson.checked.c:127:87: error: interface type only allowed for a pointer return type
-JSON_Valueparse_number_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
-                                                                                      ^
-parson.checked.c:128:1: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
-JSON_Valueparse_null_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
-^
-parson.checked.c:128:85: error: interface type only allowed for a pointer return type
-JSON_Valueparse_null_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
-                                                                                    ^
-parson.checked.c:145:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return output_string;
-           ^~~~~~~~~~~~~
-parson.checked.c:293:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return file_contents;
-           ^~~~~~~~~~~~~
-parson.checked.c:342:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return new_obj;
-           ^~~~~~~
-parson.checked.c:360:26: error: assigning to 'char *' from incompatible type '_Ptr<char>'
-    object->names[index] = parson_strdup(name);
-                         ^ ~~~~~~~~~~~~~~~~~~~
-parson.checked.c:408:20: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-            return object->values[i];
-                   ^~~~~~~~~~~~~~~~~
-parson.checked.c:435:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return new_array;
+parson.checked.c:396:12: warning: cannot prove argument meets declared bounds for 1st parameter [-Wcheck-bounds-decls-unchecked-scope]
+    memcpy(temp_names, object->names, object->count * sizeof(_Ptr<char>));
+           ^~~~~~~~~~
+parson.checked.c:396:12: note: (expanded) expected argument bounds are 'bounds((_Array_ptr<char>)temp_names, (_Array_ptr<char>)temp_names + object->count * sizeof(_Ptr<char>))'
+parson.checked.c:396:12: note: (expanded) inferred bounds are 'bounds(temp_names, temp_names + new_capacity)'
+    memcpy(temp_names, object->names, object->count * sizeof(_Ptr<char>));
+           ^~~~~~~~~~
+parson.checked.c:396:24: warning: cannot prove argument meets declared bounds for 2nd parameter [-Wcheck-bounds-decls-unchecked-scope]
+    memcpy(temp_names, object->names, object->count * sizeof(_Ptr<char>));
+                       ^~~~~~~~~~~~~
+parson.checked.c:396:24: note: (expanded) expected argument bounds are 'bounds((_Array_ptr<char>)object->names, (_Array_ptr<char>)object->names + object->count * sizeof(_Ptr<char>))'
+parson.checked.c:396:24: note: (expanded) inferred bounds are 'bounds(object->names, object->names + object->capacity)'
+    memcpy(temp_names, object->names, object->count * sizeof(_Ptr<char>));
+                       ^~~~~~~~~~~~~
+parson.checked.c:397:12: warning: cannot prove argument meets declared bounds for 1st parameter [-Wcheck-bounds-decls-unchecked-scope]
+    memcpy(temp_values, object->values, object->count * sizeof(_Ptr<JSON_Value>));
+           ^~~~~~~~~~~
+parson.checked.c:397:12: note: (expanded) expected argument bounds are 'bounds((_Array_ptr<char>)temp_values, (_Array_ptr<char>)temp_values + object->count * sizeof(_Ptr<JSON_Value>))'
+parson.checked.c:397:12: note: (expanded) inferred bounds are 'bounds(temp_values, temp_values + new_capacity)'
+    memcpy(temp_values, object->values, object->count * sizeof(_Ptr<JSON_Value>));
+           ^~~~~~~~~~~
+parson.checked.c:397:25: warning: cannot prove argument meets declared bounds for 2nd parameter [-Wcheck-bounds-decls-unchecked-scope]
+    memcpy(temp_values, object->values, object->count * sizeof(_Ptr<JSON_Value>));
+                        ^~~~~~~~~~~~~~
+parson.checked.c:397:25: note: (expanded) expected argument bounds are 'bounds((_Array_ptr<char>)object->values, (_Array_ptr<char>)object->values + object->count * sizeof(_Ptr<JSON_Value>))'
+parson.checked.c:397:25: note: (expanded) inferred bounds are 'bounds(object->values, object->values + object->capacity)'
+    memcpy(temp_values, object->values, object->count * sizeof(_Ptr<JSON_Value>));
+                        ^~~~~~~~~~~~~~
+parson.checked.c:476:12: warning: cannot prove argument meets declared bounds for 1st parameter [-Wcheck-bounds-decls-unchecked-scope]
+    memcpy(new_items, array->items, array->count * sizeof(_Ptr<JSON_Value>));
            ^~~~~~~~~
-parson.checked.c:487:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return new_value;
+parson.checked.c:476:12: note: (expanded) expected argument bounds are 'bounds((_Array_ptr<char>)new_items, (_Array_ptr<char>)new_items + array->count * sizeof(_Ptr<JSON_Value>))'
+parson.checked.c:476:12: note: (expanded) inferred bounds are 'bounds(new_items, new_items + new_capacity)'
+    memcpy(new_items, array->items, array->count * sizeof(_Ptr<JSON_Value>));
            ^~~~~~~~~
-parson.checked.c:608:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return resized_output;
-           ^~~~~~~~~~~~~~
-parson.checked.c:640:20: warning: implicit declaration of function 'parse_boolean_value' is invalid in C99 [-Wimplicit-function-declaration]
-            return parse_boolean_value(string);
-                   ^
-parson.checked.c:640:20: error: returning 'int' from a function with incompatible result type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-            return parse_boolean_value(string);
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:644:20: warning: implicit declaration of function 'parse_number_value' is invalid in C99 [-Wimplicit-function-declaration]
-            return parse_number_value(string);
-                   ^
-parson.checked.c:644:20: error: returning 'int' from a function with incompatible result type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-            return parse_number_value(string);
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:646:20: warning: implicit declaration of function 'parse_null_value' is invalid in C99 [-Wimplicit-function-declaration]
-            return parse_null_value(string);
-                   ^
-parson.checked.c:646:20: error: returning 'int' from a function with incompatible result type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-            return parse_null_value(string);
-                   ^~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:634:20: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-            return parse_object_value(string, nesting + 1);
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:636:20: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-            return parse_array_value(string, nesting + 1);
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:638:20: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-            return parse_string_value(string);
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:666:17: error: assigning to 'char *' from incompatible type '_Ptr<char>'
-        new_key = get_quoted_string(string);
-                ^ ~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:678:19: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-        new_value = parse_value(string, nesting);
-                  ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:721:25: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-        new_array_value = parse_value(string, nesting);
-                        ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:750:11: error: initializing 'char *' with an expression of incompatible type '_Ptr<char>'
-    char *new_string = get_quoted_string(string);
-          ^            ~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:762:1: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
-JSON_Valueparse_boolean_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
-^
-parson.checked.c:762:88: error: interface type only allowed for a pointer return type
-JSON_Valueparse_boolean_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
-                                                                                       ^
-parson.checked.c:767:16: error: returning '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>') from a function with incompatible result type 'int'
-        return json_value_init_boolean(1);
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:770:16: error: returning '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>') from a function with incompatible result type 'int'
-        return json_value_init_boolean(0);
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:772:12: error: incompatible pointer to integer conversion returning 'void *' from a function with result type 'int' [-Werror,-Wint-conversion]
-    return NULL;
-           ^~~~
-/usr/local/lib/clang/6.0.0/include/stddef.h:105:16: note: expanded from macro 'NULL'
-#  define NULL ((void*)0)
-               ^~~~~~~~~~
-parson.checked.c:775:1: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
-JSON_Valueparse_number_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
-^
-parson.checked.c:775:87: error: interface type only allowed for a pointer return type
-JSON_Valueparse_number_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
-                                                                                      ^
-parson.checked.c:781:16: error: incompatible pointer to integer conversion returning 'void *' from a function with result type 'int' [-Werror,-Wint-conversion]
-        return NULL;
-               ^~~~
-/usr/local/lib/clang/6.0.0/include/stddef.h:105:16: note: expanded from macro 'NULL'
-#  define NULL ((void*)0)
-               ^~~~~~~~~~
-parson.checked.c:784:12: error: returning '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>') from a function with incompatible result type 'int'
-    return json_value_init_number(number);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:787:1: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
-JSON_Valueparse_null_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
-^
-parson.checked.c:787:85: error: interface type only allowed for a pointer return type
-JSON_Valueparse_null_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
-                                                                                    ^
-parson.checked.c:791:16: error: returning '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>') from a function with incompatible result type 'int'
-        return json_value_init_null();
-               ^~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:793:12: error: incompatible pointer to integer conversion returning 'void *' from a function with result type 'int' [-Werror,-Wint-conversion]
-    return NULL;
-           ^~~~
-/usr/local/lib/clang/6.0.0/include/stddef.h:105:16: note: expanded from macro 'NULL'
-#  define NULL ((void*)0)
-               ^~~~~~~~~~
-parson.checked.c:1025:11: error: initializing 'char *' with an expression of incompatible type '_Ptr<char>'
-    char *file_contents = read_file(filename);
-          ^               ~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1036:11: error: initializing 'char *' with an expression of incompatible type '_Ptr<char>'
-    char *file_contents = read_file(filename);
-          ^               ~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1059:25: error: assigning to 'char *' from incompatible type '_Ptr<char>'
-    string_mutable_copy = parson_strdup(string);
-                        ^ ~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1066:12: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    result = parse_value((const char**)&string_mutable_copy_ptr, 0);
-           ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1068:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return result;
-           ^~~~~~
-parson.checked.c:1077:12: error: returning '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>') from a function with incompatible result type 'JSON_Value *' (aka 'struct json_value_t *')
-    return json_object_nget_value(object, name, strlen(name));
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1081:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_string(json_object_get_value(object, name));
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1089:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_object(json_object_get_value(object, name));
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1093:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_array(json_object_get_value(object, name));
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1103:16: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-        return json_object_get_value(object, name);
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1110:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_string(json_object_dotget_value(object, name));
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1118:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_object(json_object_dotget_value(object, name));
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1122:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_array(json_object_dotget_value(object, name));
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1144:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return object->values[index];
-           ^~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1165:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *val = json_object_dotget_value(object, name);
-                ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1178:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_string(json_array_get_value(array, index));
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1186:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_object(json_array_get_value(array, index));
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1190:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_array(json_array_get_value(array, index));
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1258:29: error: assigning to 'JSON_Object *' (aka 'struct json_object_t *') from incompatible type '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>')
-    new_value->value.object = json_object_init(new_value);
-                            ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1273:28: error: assigning to 'JSON_Array *' (aka 'struct json_array_t *') from incompatible type '_Ptr<JSON_Array>' (aka '_Ptr<struct json_array_t>')
-    new_value->value.array = json_array_init(new_value);
-                           ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1292:10: error: assigning to 'char *' from incompatible type '_Ptr<char>'
-    copy = parson_strndup(string, string_len);
-         ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1296:11: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    value = json_value_init_string_no_copy(copy);
-          ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1300:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return value;
-           ^~~~~
-parson.checked.c:1303:14: error: conflicting types for 'json_value_init_number'
-JSON_Value * json_value_init_number(double number) {
-             ^
-./parson.checked.h:208:19: note: previous declaration is here
-_Ptr<JSON_Value>  json_value_init_number (double number);
-                  ^
-parson.checked.c:1318:14: error: conflicting types for 'json_value_init_boolean'
-JSON_Value * json_value_init_boolean(int boolean) {
-             ^
-./parson.checked.h:209:19: note: previous declaration is here
-_Ptr<JSON_Value>  json_value_init_boolean(int boolean);
-                  ^
-parson.checked.c:1329:14: error: conflicting types for 'json_value_init_null'
-JSON_Value * json_value_init_null(void) {
-             ^
-./parson.checked.h:210:19: note: previous declaration is here
-_Ptr<JSON_Value>  json_value_init_null   (void);
-                  ^
-parson.checked.c:1357:33: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-                temp_value_copy = json_value_deep_copy(temp_value);
-                                ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1379:33: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-                temp_value_copy = json_value_deep_copy(temp_value);
-                                ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1400:30: error: assigning to 'char *' from incompatible type '_Ptr<char>'
-            temp_string_copy = parson_strdup(temp_string);
-                             ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1404:26: error: assigning to 'JSON_Value *' (aka 'struct json_value_t *') from incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-            return_value = json_value_init_string_no_copy(temp_string_copy);
-                         ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1368:20: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-            return return_value;
-                   ^~~~~~~~~~~~
-parson.checked.c:1390:20: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-            return return_value;
-                   ^~~~~~~~~~~~
-parson.checked.c:1408:20: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-            return return_value;
-                   ^~~~~~~~~~~~
-parson.checked.c:1544:26: error: use of undeclared identifier 'ix'
-    if (array == NULL || ix >= json_array_get_count(array)) {
-                         ^
-parson.checked.c:1547:49: error: use of undeclared identifier 'ix'
-    json_value_free(json_array_get_value(array, ix));
-                                                ^
-parson.checked.c:1548:56: error: use of undeclared identifier 'ix'
-    to_move_bytes = (json_array_get_count(array) - 1 - ix) * sizeof(JSON_Value*);
-                                                       ^
-parson.checked.c:1549:28: error: use of undeclared identifier 'ix'
-    memmove(array->items + ix, array->items + ix + 1, to_move_bytes);
-                           ^
-parson.checked.c:1549:47: error: use of undeclared identifier 'ix'
-    memmove(array->items + ix, array->items + ix + 1, to_move_bytes);
-                                              ^
-parson.checked.c:1542:86: warning: unused parameter 'i' [-Wunused-parameter]
-JSON_Status  json_array_remove(JSON_Array *array : itype(_Ptr<JSON_Array> ) , size_t i) {
-                                                                                     ^
-parson.checked.c:1555:68: error: use of undeclared identifier 'ix'
-    if (array == NULL || value == NULL || value->parent != NULL || ix >= json_array_get_count(array)) {
-                                                                   ^
-parson.checked.c:1558:49: error: use of undeclared identifier 'ix'
-    json_value_free(json_array_get_value(array, ix));
-                                                ^
-parson.checked.c:1560:18: error: use of undeclared identifier 'ix'
-    array->items[ix] = value;
-                 ^
-parson.checked.c:1554:93: warning: unused parameter 'i' [-Wunused-parameter]
-JSON_Status  json_array_replace_value(JSON_Array *array : itype(_Ptr<JSON_Array> ) , size_t i, JSON_Value *value : itype(_Ptr<JSON_Value> ) ) {
-                                                                                            ^
-parson.checked.c:1565:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_string(string);
-                ^       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1577:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_number(number);
-                ^       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1589:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_boolean(boolean);
-                ^       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1601:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_null();
-                ^       ~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1632:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_string(string);
-                ^       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1644:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_number(number);
-                ^       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1656:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_boolean(boolean);
-                ^       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1668:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_null();
-                ^       ~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1728:22: error: assigning to 'char *' from incompatible type '_Ptr<char>'
-        current_name = parson_strndup(name, dot_pos - name);
-                     ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1729:18: error: assigning to 'JSON_Object *' (aka 'struct json_object_t *') from incompatible type '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>')
-        temp_obj = json_object_get_object(object, current_name);
-                 ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1741:22: error: assigning to 'JSON_Object *' (aka 'struct json_object_t *') from incompatible type '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>')
-            temp_obj = json_object_get_object(object, current_name);
-                     ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1749:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_string(string);
-                ^       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1761:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_number(number);
-                ^       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1773:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_boolean(boolean);
-                ^       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1785:17: error: initializing 'JSON_Value *' (aka 'struct json_value_t *') with an expression of incompatible type '_Ptr<JSON_Value>' (aka '_Ptr<struct json_value_t>')
-    JSON_Value *value = json_value_init_null();
-                ^       ~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1824:22: error: assigning to 'char *' from incompatible type '_Ptr<char>'
-        current_name = parson_strndup(name, dot_pos - name);
-                     ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1825:18: error: assigning to 'JSON_Object *' (aka 'struct json_object_t *') from incompatible type '_Ptr<JSON_Object>' (aka '_Ptr<struct json_object_t>')
-        temp_obj = json_object_get_object(object, current_name);
-                 ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1976:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_object(value);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1980:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_array(value);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1984:12: error: expression has unknown bounds, cast to ptr<T> expects source to have bounds
-    return json_value_get_string(value);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-parson.checked.c:1996:19: error: assigning to 'JSON_Malloc_Function' (aka 'void *(*)(unsigned long)') from incompatible type '_Ptr<void *(size_t)>' (aka '_Ptr<void *(unsigned long)>')
-    parson_malloc = malloc_fun;
-                  ^ ~~~~~~~~~~
-parson.checked.c:1997:17: error: assigning to 'JSON_Free_Function' (aka 'void (*)(void *)') from incompatible type '_Ptr<void (void *)>'
-    parson_free = free_fun;
-                ^ ~~~~~~~~
-11 warnings and 94 errors generated.
-make: *** [testchecked] Error 1
+parson.checked.c:476:23: warning: cannot prove argument meets declared bounds for 2nd parameter [-Wcheck-bounds-decls-unchecked-scope]
+    memcpy(new_items, array->items, array->count * sizeof(_Ptr<JSON_Value>));
+                      ^~~~~~~~~~~~
+parson.checked.c:476:23: note: (expanded) expected argument bounds are 'bounds((_Array_ptr<char>)array->items, (_Array_ptr<char>)array->items + array->count * sizeof(_Ptr<JSON_Value>))'
+parson.checked.c:476:23: note: (expanded) inferred bounds are 'bounds(array->items, array->items + array->capacity)'
+    memcpy(new_items, array->items, array->count * sizeof(_Ptr<JSON_Value>));
+                      ^~~~~~~~~~~~
+parson.checked.c:1567:11: warning: cannot prove argument meets declared bounds for 1st parameter [-Wcheck-bounds-decls-unchecked-scope]
+  memmove(array->items + ix, array->items + ix + 1, to_move_bytes);
+          ^~~~~~~~~~~~~~~~~
+parson.checked.c:1567:11: note: (expanded) expected argument bounds are 'bounds((_Array_ptr<char>)array->items + ix, (_Array_ptr<char>)array->items + ix + to_move_bytes)'
+parson.checked.c:1567:11: note: (expanded) inferred bounds are 'bounds(array->items, array->items + array->capacity)'
+  memmove(array->items + ix, array->items + ix + 1, to_move_bytes);
+          ^~~~~~~~~~~~~~~~~
+parson.checked.c:1567:30: warning: cannot prove argument meets declared bounds for 2nd parameter [-Wcheck-bounds-decls-unchecked-scope]
+  memmove(array->items + ix, array->items + ix + 1, to_move_bytes);
+                             ^~~~~~~~~~~~~~~~~~~~~
+parson.checked.c:1567:30: note: (expanded) expected argument bounds are 'bounds((_Array_ptr<char>)array->items + ix + 1, (_Array_ptr<char>)array->items + ix + 1 + to_move_bytes)'
+parson.checked.c:1567:30: note: (expanded) inferred bounds are 'bounds(array->items, array->items + array->capacity)'
+  memmove(array->items + ix, array->items + ix + 1, to_move_bytes);
+                             ^~~~~~~~~~~~~~~~~~~~~
+8 warnings generated.
