@@ -53,13 +53,12 @@ enum json_result_t {
 };
 typedef int JSON_Status;
 
-typedef void * (*JSON_Malloc_Function)(size_t s) : byte_count(s);
+typedef void*  (*JSON_Malloc_Function)(size_t s) : byte_count(s);
 typedef void   (*JSON_Free_Function)(void *);
 
 /* Call only once, before calling any other function from parson API. If not called, malloc and free
    from stdlib will be used for all allocations */
-void json_set_allocation_functions(_Ptr<void* (size_t )> malloc_fun, _Ptr<void (void* )> free_fun);
-
+void json_set_allocation_functions(void* (* malloc_fun)(size_t s) : byte_count(s), void (*free_fun)(void*));
 /* Parses first JSON value in a file, returns NULL in case of error */
 _Ptr<JSON_Value>  json_parse_file(const char *filename : itype(_Ptr<const char> ) );
 
