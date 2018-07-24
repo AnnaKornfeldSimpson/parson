@@ -34,6 +34,9 @@
 #include <ctype.h>
 #include <math_checked.h>
 #include <errno.h>
+#include <checkedc_extensions.h>
+
+#pragma CHECKED_SCOPE ON
 
 /* Apparently sscanf is not implemented in some "standard" libraries, so don't use it, if you
  * don't have to. */
@@ -45,20 +48,20 @@
 
 #define SIZEOF_TOKEN(a)       (sizeof(a) - 1)
 #define SKIP_CHAR(str)        ((*str)++)
-#define SKIP_WHITESPACES(str) while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); }
+#define SKIP_WHITESPACES(str) _Unchecked { while (isspace((unsigned char)(**str))) { SKIP_CHAR(str); } }
 #define MAX(a, b)             ((a) > (b) ? (a) : (b))
 
 #undef malloc
 #undef free
 
-static JSON_Malloc_Function parson_malloc = malloc;
-static JSON_Free_Function parson_free = free;
+static JSON_Malloc_Function parson_malloc = &malloc;
+static JSON_Free_Function parson_free = &free;
 
 #define IS_CONT(b) (((unsigned char)(b) & 0xC0) == 0x80) /* is utf-8 continuation byte */
 
 /* Type definitions */
 typedef union json_value_value {
-  _Ptr<char> string;
+  _Nt_array_ptr<char> string;
   double  number;
   _Ptr<JSON_Object> object;
   _Ptr<JSON_Array> array;
@@ -73,37 +76,37 @@ struct json_value_t {
 };
 
 struct json_object_t {
-  _Ptr<JSON_Value> wrapping_value;
-  _Array_ptr<char*> names : count(capacity) itype(_Array_ptr<_Nt_array_ptr<char>>);
-  _Array_ptr<_Ptr<JSON_Value>> values : count(capacity);
+  JSON_Value* wrapping_value : itype(_Ptr<JSON_Value>);
+  char** names : count(capacity) itype(_Array_ptr<_Nt_array_ptr<char>>);
+  JSON_Value** values: count(capacity) itype(_Array_ptr<_Ptr<JSON_Value>>);
   size_t       count;
   size_t       capacity;
 };
 
 struct json_array_t {
-  _Ptr<JSON_Value> wrapping_value;
-  _Array_ptr<_Ptr<JSON_Value>> items : count(capacity);
+  JSON_Value* wrapping_value : itype(_Ptr<JSON_Value>);
+  JSON_Value** items: count(capacity) itype(_Array_ptr<_Ptr<JSON_Value>>);
   size_t       count;
   size_t       capacity;
 };
 
 /* Various */
-_Ptr<char>  read_file(const char *filename : itype(_Ptr<const char> ) );
-void  remove_comments(char *string : itype(_Ptr<char> ) , const char *start_token : itype(_Ptr<const char> ) , const char *end_token : itype(_Ptr<const char> ) );
-_Ptr<char>  parson_strndup(const char *string : itype(_Ptr<const char> ) , size_t n);
-_Ptr<char>  parson_strdup(const char *string : itype(_Ptr<const char> ) );
+_Nt_array_ptr<char>  read_file(const char *filename : itype(_Nt_array_ptr<const char>));
+void  remove_comments(char *string : itype(_Nt_array_ptr<char>), const char *start_token : itype(_Nt_array_ptr<const char>), const char *end_token : itype(_Nt_array_ptr<const char> ) );
+_Nt_array_ptr<char>  parson_strndup(const char *string : itype(_Nt_array_ptr<const char>) count(n), size_t n) : count(n);
+_Nt_array_ptr<char>  parson_strdup(const char *string : itype(_Nt_array_ptr<const char> ) );
 static int    hex_char_to_int(char c);
-int  parse_utf16_hex(const char *s : itype(_Ptr<const char> ) , _Ptr<unsigned int> result);
+int  parse_utf16_hex(const char *s : itype(_Nt_array_ptr<const char> ) , _Ptr<unsigned int> result);
 static int    num_bytes_in_utf8_sequence(unsigned char c);
-int  verify_utf8_sequence(const unsigned char *string : itype(_Ptr<const unsigned char> ) , _Ptr<int> len);
-int  is_valid_utf8(const char *string : itype(_Ptr<const char> ) , size_t string_len);
-int  is_decimal(const char *string : itype(_Ptr<const char> ) , size_t length);
+int  verify_utf8_sequence(const unsigned char *string : itype(_Nt_array_ptr<const unsigned char> ) , _Ptr<int> len);
+int  is_valid_utf8(const char *string : itype(_Nt_array_ptr<const char>) count(string_len), size_t string_len);
+int  is_decimal(const char *string : itype(_Nt_array_ptr<const char>) count(length), size_t length);
 
 /* JSON Object */
 _Ptr<JSON_Object>  json_object_init(JSON_Value *wrapping_value : itype(_Ptr<JSON_Value> ) );
-JSON_Status  json_object_add(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , JSON_Value *value : itype(_Ptr<JSON_Value> ) );
+JSON_Status  json_object_add(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) , JSON_Value *value : itype(_Ptr<JSON_Value> ) );
 JSON_Status  json_object_resize(JSON_Object *object : itype(_Ptr<JSON_Object> ) , size_t new_capacity);
-_Ptr<JSON_Value>  json_object_nget_value(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , size_t n);
+JSON_Value* json_object_nget_value(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char>) , size_t n) : itype(_Ptr<JSON_Value>);
 void  json_object_free(JSON_Object *object : itype(_Ptr<JSON_Object> ) );
 
 /* JSON Array */
@@ -113,29 +116,29 @@ JSON_Status  json_array_resize(JSON_Array *array : itype(_Ptr<JSON_Array> ) , si
 void  json_array_free(JSON_Array *array : itype(_Ptr<JSON_Array> ) );
 
 /* JSON Value */
-_Ptr<JSON_Value>  json_value_init_string_no_copy(char *string : itype(_Ptr<char> ) );
+_Ptr<JSON_Value>  json_value_init_string_no_copy(char *string : itype(_Nt_array_ptr<char> ) );
 
 /* Parser */
-JSON_Status  skip_quotes(const char **string : itype(_Ptr<_Ptr<const char>> ) );
-int  parse_utf16(const char **unprocessed : itype(_Ptr<_Ptr<const char>> ) , char **processed : itype(_Ptr<_Ptr<char>> ) );
-_Ptr<char>  process_string(const char *input : itype(_Ptr<const char> ) , size_t len);
-_Ptr<char>  get_quoted_string(const char **string : itype(_Ptr<_Ptr<const char>> ) );
-_Ptr<JSON_Value>  parse_object_value(const char **string : itype(_Ptr<_Ptr<const char>> ) , size_t nesting);
-_Ptr<JSON_Value>  parse_array_value(const char **string : itype(_Ptr<_Ptr<const char>> ) , size_t nesting);
-_Ptr<JSON_Value>  parse_string_value(const char **string : itype(_Ptr<_Ptr<const char>> ) );
-JSON_Value* parse_boolean_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
-JSON_Value* parse_number_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
-JSON_Value* parse_null_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
-_Ptr<JSON_Value>  parse_value(const char **string : itype(_Ptr<_Ptr<const char>> ) , size_t nesting);
+JSON_Status  skip_quotes(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) );
+int  parse_utf16(const char **unprocessed : itype(_Array_ptr<_Nt_array_ptr<const char>> ) , char **processed : itype(_Array_ptr<_Nt_array_ptr<char>> ) );
+char* process_string(const char *input : itype(_Nt_array_ptr<const char>) , size_t len) : itype(_Nt_array_ptr<char>);
+char* get_quoted_string(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) : itype(_Nt_array_ptr<char>);
+_Ptr<JSON_Value>  parse_object_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) , size_t nesting);
+_Ptr<JSON_Value>  parse_array_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) , size_t nesting);
+_Ptr<JSON_Value>  parse_string_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) );
+JSON_Value* parse_boolean_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
+JSON_Value* parse_number_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
+JSON_Value* parse_null_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) : itype(_Ptr<JSON_Value> ) ;
+_Ptr<JSON_Value>  parse_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) , size_t nesting);
 
 /* Serialization */
-int  json_serialize_to_buffer_r(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , char *buf : itype(_Ptr<char> ) , int level, int is_pretty, char *num_buf : itype(_Ptr<char> ) );
-int  json_serialize_string(const char *string : itype(_Ptr<const char> ) , char *buf : itype(_Ptr<char> ) );
-int  append_indent(char *buf : itype(_Ptr<char> ) , int level);
-int  append_string(char *buf : itype(_Ptr<char> ) , const char *string : itype(_Ptr<const char> ) );
+int  json_serialize_to_buffer_r(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , char *buf : itype(_Nt_array_ptr<char> ) , int level, int is_pretty, char *num_buf : itype(_Nt_array_ptr<char> ) );
+int  json_serialize_string(const char *string : itype(_Nt_array_ptr<const char> ) , char *buf : itype(_Nt_array_ptr<char> ) );
+int  append_indent(char *buf : itype(_Nt_array_ptr<char> ) , int level);
+int  append_string(char *buf : itype(_Nt_array_ptr<char> ) , const char *string : itype(_Nt_array_ptr<const char> ) );
 
 /* Various */
-_Ptr<char>  parson_strndup(const char *string : itype(_Ptr<const char> ) , size_t n) {
+_Nt_array_ptr<char> parson_strndup(const char *string : itype(_Nt_array_ptr<const char>) count(n), size_t n) : count(n) {
   _Array_ptr<void> tmp_output_string : byte_count(n) = parson_malloc(n + 1);
   _Nt_array_ptr<char> output_string : count(n) = (_Nt_array_ptr<char>)tmp_output_string;
   if (!output_string) {
@@ -146,8 +149,9 @@ _Ptr<char>  parson_strndup(const char *string : itype(_Ptr<const char> ) , size_
   return output_string;
 }
 
-_Ptr<char>  parson_strdup(const char *string : itype(_Ptr<const char> ) ) {
-  return parson_strndup(string, strlen(string));
+_Nt_array_ptr<char>  parson_strdup(const char *string : itype(_Nt_array_ptr<const char> ) ) {
+  size_t len = strlen(string);
+  return parson_strndup(_Dynamic_bounds_cast<_Nt_array_ptr<const char>>(string, count(len)), len);
 }
 
 static int hex_char_to_int(char c) {
@@ -161,15 +165,18 @@ static int hex_char_to_int(char c) {
   return -1;
 }
 
-int  parse_utf16_hex(const char *s : itype(_Ptr<const char> ) , _Ptr<unsigned int> result) {
+// TODO: This function requires bounds widening logic, so is unchecked.
+int  parse_utf16_hex(const char *s : itype(_Nt_array_ptr<const char> ) , _Ptr<unsigned int> result) {
   int x1, x2, x3, x4;
-  if (s[0] == '\0' || s[1] == '\0' || s[2] == '\0' || s[3] == '\0') {
-    return 0;
+  _Unchecked {
+    if (s[0] == '\0' || s[1] == '\0' || s[2] == '\0' || s[3] == '\0') {
+      return 0;
+    }
+    x1 = hex_char_to_int(s[0]);
+    x2 = hex_char_to_int(s[1]);
+    x3 = hex_char_to_int(s[2]);
+    x4 = hex_char_to_int(s[3]);
   }
-  x1 = hex_char_to_int(s[0]);
-  x2 = hex_char_to_int(s[1]);
-  x3 = hex_char_to_int(s[2]);
-  x4 = hex_char_to_int(s[3]);
   if (x1 == -1 || x2 == -1 || x3 == -1 || x4 == -1) {
     return 0;
   }
@@ -192,26 +199,28 @@ static int num_bytes_in_utf8_sequence(unsigned char c) {
   return 0; /* won't happen */
 }
 
-int  verify_utf8_sequence(const unsigned char *string : itype(_Ptr<const unsigned char> ) , _Ptr<int> len) {
+// TODO: Requires bounds widening, so left unchecked.
+int  verify_utf8_sequence(const unsigned char *string : itype(_Nt_array_ptr<const unsigned char> ) , _Ptr<int> len) {
   unsigned int cp = 0;
   *len = num_bytes_in_utf8_sequence(string[0]);
-
-  if (*len == 1) {
-    cp = string[0];
-  } else if (*len == 2 && IS_CONT(string[1])) {
-    cp = string[0] & 0x1F;
-    cp = (cp << 6) | (string[1] & 0x3F);
-  } else if (*len == 3 && IS_CONT(string[1]) && IS_CONT(string[2])) {
-    cp = ((unsigned char)string[0]) & 0xF;
-    cp = (cp << 6) | (string[1] & 0x3F);
-    cp = (cp << 6) | (string[2] & 0x3F);
-  } else if (*len == 4 && IS_CONT(string[1]) && IS_CONT(string[2]) && IS_CONT(string[3])) {
-    cp = string[0] & 0x7;
-    cp = (cp << 6) | (string[1] & 0x3F);
-    cp = (cp << 6) | (string[2] & 0x3F);
-    cp = (cp << 6) | (string[3] & 0x3F);
-  } else {
-    return 0;
+  _Unchecked {
+    if (*len == 1) {
+      cp = string[0];
+    } else if (*len == 2 && IS_CONT(string[1])) {
+      cp = string[0] & 0x1F;
+      cp = (cp << 6) | (string[1] & 0x3F);
+    } else if (*len == 3 && IS_CONT(string[1]) && IS_CONT(string[2])) {
+      cp = ((unsigned char)string[0]) & 0xF;
+      cp = (cp << 6) | (string[1] & 0x3F);
+      cp = (cp << 6) | (string[2] & 0x3F);
+    } else if (*len == 4 && IS_CONT(string[1]) && IS_CONT(string[2]) && IS_CONT(string[3])) {
+      cp = string[0] & 0x7;
+      cp = (cp << 6) | (string[1] & 0x3F);
+      cp = (cp << 6) | (string[2] & 0x3F);
+      cp = (cp << 6) | (string[3] & 0x3F);
+    } else {
+      return 0;
+    }
   }
 
   /* overlong encodings */
@@ -234,11 +243,15 @@ int  verify_utf8_sequence(const unsigned char *string : itype(_Ptr<const unsigne
   return 1;
 }
 
-int  is_valid_utf8(const char *string : itype(_Ptr<const char> ) , size_t string_len) {
+int  is_valid_utf8(const char *string : itype(_Nt_array_ptr<const char>) count(string_len), size_t string_len) {
   int len = 0;
-  const char *string_end =  string + string_len;
+  // TODO: I think this needs a dynamic bounds cast, but I also think the inference might be wrong? Certainly it is confusing. Unchecked for now.
+  //const char* string_end = string + string_len;
+  _Nt_array_ptr<const char> string_end : bounds(string, string+string_len) = string + string_len;
   while (string < string_end) {
-    if (!verify_utf8_sequence((const unsigned char*)string, &len)) {
+    // TODO warns here about a math issue (string_len must be >= 0)
+    if (!verify_utf8_sequence(_Dynamic_bounds_cast<_Nt_array_ptr<const unsigned char>>(string, count(0)), &len))
+    {
       return 0;
     }
     string += len;
@@ -246,12 +259,15 @@ int  is_valid_utf8(const char *string : itype(_Ptr<const char> ) , size_t string
   return 1;
 }
 
-int  is_decimal(const char *string : itype(_Ptr<const char> ) , size_t length) {
+int  is_decimal(const char *string : itype(_Nt_array_ptr<const char>) count(length), size_t length) {
   if (length > 1 && string[0] == '0' && string[1] != '.') {
     return 0;
   }
-  if (length > 2 && !strncmp(string, "-0", 2) && string[2] != '.') {
-    return 0;
+  // TODO: Would be great if compiler could recognize length > 2 here
+  _Unchecked {
+    if (length > 2 && !strncmp(string, "-0", 2) && string[2] != '.') {
+      return 0;
+    }
   }
   while (length--) {
     if (strchr("xX", string[length])) {
@@ -261,8 +277,8 @@ int  is_decimal(const char *string : itype(_Ptr<const char> ) , size_t length) {
   return 1;
 }
 
-_Ptr<char>  read_file(const char *filename : itype(_Ptr<const char> ) ) {
-  FILE *fp = fopen(filename, "r");
+_Nt_array_ptr<char> read_file(const char *filename : itype(_Nt_array_ptr<const char>)) {
+  _Ptr<FILE> fp = fopen(filename, "r");
   size_t file_size;
   long pos;
   if (!fp) {
@@ -276,16 +292,22 @@ _Ptr<char>  read_file(const char *filename : itype(_Ptr<const char> ) ) {
   }
   file_size = pos;
   rewind(fp);
-  _Array_ptr<void> tmp_file_contents : byte_count(file_size*(size_t)1) = parson_malloc(sizeof(char) * (file_size + 1));
-  _Nt_array_ptr<char> file_contents : count(file_size*(size_t)1) = (_Nt_array_ptr<char>)tmp_file_contents;
+
+  // TODO: Warning about math here
+  _Nt_array_ptr<char> file_contents : count(file_size) =
+    (_Nt_array_ptr<char>)parson_malloc((file_size + 1));
+  
   if (!file_contents) {
     fclose(fp);
     return NULL;
   }
-  if (fread(file_contents, file_size, 1, fp) < 1) {
+  if (fread(_Dynamic_bounds_cast<_Nt_array_ptr<char>>(file_contents, bounds(file_contents, file_contents + file_size * (size_t)1)),
+            file_size,
+            1,
+            fp) < 1) {
     if (ferror(fp)) {
       fclose(fp);
-      parson_free((void*)file_contents);
+      parson_free(_Dynamic_bounds_cast<_Array_ptr<char>>(file_contents, byte_count(1)));
       return NULL;
     }
   }
@@ -294,35 +316,46 @@ _Ptr<char>  read_file(const char *filename : itype(_Ptr<const char> ) ) {
   return file_contents;
 }
 
-void  remove_comments(char *string : itype(_Ptr<char> ) , const char *start_token : itype(_Ptr<const char> ) , const char *end_token : itype(_Ptr<const char> ) ) {
+void  remove_comments(char *string : itype(_Nt_array_ptr<char>) ,
+                      const char *start_token :itype(_Nt_array_ptr<const char>),
+                      const char *end_token : itype(_Nt_array_ptr<const char>))
+{
   int in_string = 0, escaped = 0;
   size_t i;
-  char *ptr = NULL, current_char;
   size_t start_token_len = strlen(start_token);
   size_t end_token_len = strlen(end_token);
   if (start_token_len == 0 || end_token_len == 0) {
     return;
   }
+  
+  char current_char = *string;
   while ((current_char = *string) != '\0') {
     if (current_char == '\\' && !escaped) {
       escaped = 1;
       string++;
       continue;
-    } else if (current_char == '\"' && !escaped) {
+    }
+    else if (current_char == '\"' && !escaped) {
       in_string = !in_string;
-    } else if (!in_string && strncmp(string, start_token, start_token_len) == 0) {
-      for(i = 0; i < start_token_len; i++) {
-        string[i] = ' ';
-      }
-      string = string + start_token_len;
-      ptr = strstr(string, end_token);
-      if (!ptr) {
-        return;
-      }
-      for (i = 0; i < (ptr - string) + end_token_len; i++) {
-        string[i] = ' ';
-      }
-      string = ptr + end_token_len - 1;
+    }
+    // TODO: Uh oh. Compiler can't prove first arg bounds and neither can I.
+    else { _Unchecked {
+      if (!in_string &&
+          strncmp(string, start_token, start_token_len) == 0) {
+        for(i = 0; i < start_token_len; i++) {
+          string[i] = ' ';
+        }
+        string = string + start_token_len;
+        char* ptr = strstr(string, end_token);
+        if (!ptr) {
+          return;
+        }
+        for (i = 0; i < (ptr - string) + end_token_len; i++) {
+          string[i] = ' ';
+        }
+        // TODO: Don't understand the compiler warning here. Yes string bounds have changed to ptr, ptr + 0, what is the complaint?
+        string = ptr + end_token_len - 1;
+      } }
     }
     escaped = 0;
     string++;
@@ -343,7 +376,10 @@ _Ptr<JSON_Object>  json_object_init(JSON_Value *wrapping_value : itype(_Ptr<JSON
   return new_obj;
 }
 
-JSON_Status  json_object_add(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , JSON_Value *value : itype(_Ptr<JSON_Value> ) ) {
+JSON_Status  json_object_add(JSON_Object *object : itype(_Ptr<JSON_Object> ) ,
+                             const char *name :itype(_Nt_array_ptr<const char>),
+                             JSON_Value *value : itype(_Ptr<JSON_Value> ) )
+{
   size_t index = 0;
   if (object == NULL || name == NULL || value == NULL) {
     return JSONFailure;
@@ -358,7 +394,7 @@ JSON_Status  json_object_add(JSON_Object *object : itype(_Ptr<JSON_Object> ) , c
     }
   }
   index = object->count;
-  object->names[index] = (char*)parson_strdup(name);
+  object->names[index] = parson_strdup(name);
   if (object->names[index] == NULL) {
     return JSONFailure;
   }
@@ -374,62 +410,66 @@ JSON_Status  json_object_resize(JSON_Object *object : itype(_Ptr<JSON_Object> ) 
       new_capacity == 0) {
     return JSONFailure; /* Shouldn't happen */
   }
-  _Array_ptr<char*> temp_names : count(new_capacity) =
-    parson_malloc(new_capacity * sizeof(char*));
-  if (temp_names == NULL) {
-    return JSONFailure;
-  }
-  _Array_ptr<_Ptr<JSON_Value>> temp_values : count(new_capacity) =
-    parson_malloc(new_capacity * sizeof(_Ptr<JSON_Value>));
-  if (temp_values == NULL) {
-    parson_free((void*)temp_names);
-    return JSONFailure;
-  }
+  _Unchecked {
+    char** temp_names = (char**) parson_malloc(new_capacity * sizeof(char*));
+    if (temp_names == NULL) {
+      return JSONFailure;
+    }
+    JSON_Value** temp_values = (JSON_Value**)parson_malloc(new_capacity * sizeof(JSON_Value*));
+    if (temp_values == NULL) {
+      parson_free(temp_names);
+      return JSONFailure;
+    }
 
-  // TODO: Memcpy functions below warn "cannot prove argument meets declared bounds"
-  // 1st arg truly won't prove unless new_capacity > object->count, which isn't checked here!
-  // It isn't exactly determined in the caller either.
-  // This sort of means we can't prove the second arg either, since we can't really know that
-  // count <= capacity. (Even if we could, the compiler would have trouble with "<")
-  // This reasoning applies to both memcpy functions below.
-  if (object->names != NULL && object->values != NULL && object->count > 0) {
-    memcpy(temp_names, object->names, object->count * sizeof(_Ptr<char>));
-    memcpy(temp_values, object->values, object->count * sizeof(_Ptr<JSON_Value>));
-  }
-  parson_free((void*)object->names);
-  parson_free((void*)object->values);
-  object->capacity = new_capacity;
-  object->names = _Dynamic_bounds_cast<_Array_ptr<char*>>(temp_names, count(object->capacity));
-  object->values = _Dynamic_bounds_cast<_Array_ptr<_Ptr<JSON_Value>>>(temp_values,
-                                                                      count(object->capacity));
+    /* TODO: Memcpy functions below warn "cannot prove argument meets declared 
+     * bounds" 1st arg truly won't prove unless new_capacity > object->count, 
+     * which isn't checked here! It isn't exactly determined in the caller either.
+     *  This sort of means we can't prove the second arg either, since we 
+     * can't really know that count <= capacity. (Even if we could, 
+     * the compiler would have trouble with "<")
+     *  This reasoning applies to both memcpy functions below. */
+    if (object->names != NULL && object->values != NULL && object->count > 0) {
+      memcpy(temp_names, object->names, object->count * sizeof(char*));
+      memcpy(temp_values, object->values, object->count * sizeof(JSON_Value*));
+    }
+    parson_free(object->names);
+    parson_free(object->values);
+    object->capacity = new_capacity;
+  
+    object->names = temp_names; 
+    object->values = temp_values;
+  } // end _Unchecked
   return JSONSuccess;
 }
 
-_Ptr<JSON_Value> json_object_nget_value(const JSON_Object *object : itype(_Ptr<const JSON_Object>),
-                                        const char *name : itype(_Ptr<const char>), size_t n) {
+JSON_Value* json_object_nget_value(const JSON_Object *object : itype(_Ptr<const JSON_Object>), const char *name : itype(_Nt_array_ptr<const char>), size_t n) : itype(_Ptr<JSON_Value>) {
   size_t i, name_length;
   for (i = 0; i < json_object_get_count(object); i++) {
-    name_length = strlen(object->names[i]);
-    const char* tmp_name = object->names[i];
-
-    if (name_length != n) {
-      continue;
-    }
-    if (strncmp(tmp_name, name, n) == 0) {
-      return object->values[i];
-    }
+    // TODO: I wish the compiler could reason about the following two lines of code correctly without needing additional reasoning. Dynamic bounds cast causes a compiler crash at the moment.
+    _Unchecked {
+      name_length = strlen(object->names[i]);
+      const char* tmp_name = object->names[i];
+    
+      if (name_length != n) {
+        continue;
+      }
+      if (strncmp(tmp_name, name, n) == 0) {
+        return object->values[i];
+      }
+    } // unchecked
   }
   return NULL;
 }
 
-void  json_object_free(JSON_Object *object : itype(_Ptr<JSON_Object> ) ) {
+// TODO: Lots of complaining about frees here, so unchecked
+_Unchecked void  json_object_free(JSON_Object *object : itype(_Ptr<JSON_Object> ) ) {
   size_t i;
   for (i = 0; i < object->count; i++) {
-    parson_free((void*)object->names[i]);
+    parson_free(object->names[i]);
     json_value_free(object->values[i]);
   }
-  parson_free((void*)object->names);
-  parson_free((void*)object->values);
+  parson_free(object->names);
+  parson_free(object->values);
   parson_free(object);
 }
 
@@ -459,25 +499,25 @@ JSON_Status  json_array_add(JSON_Array *array : itype(_Ptr<JSON_Array> ) , JSON_
   return JSONSuccess;
 }
 
-JSON_Status  json_array_resize(JSON_Array *array : itype(_Ptr<JSON_Array>) , size_t new_capacity) {
+_Unchecked JSON_Status  json_array_resize(JSON_Array *array : itype(_Ptr<JSON_Array>) , size_t new_capacity) {
   if (new_capacity == 0) {
     return JSONFailure;
   }
-  _Array_ptr<_Ptr<JSON_Value>> new_items : count(new_capacity) =
-    parson_malloc(new_capacity * sizeof(_Ptr<JSON_Value>));
+  JSON_Value** new_items = (JSON_Value**) parson_malloc(new_capacity * sizeof(_Ptr<JSON_Value>));
 
   if (new_items == NULL) {
     return JSONFailure;
   }
 
   // TODO: We cannot actually prove bounds for either first or second argument
-  // See above (around line 390) 
+  // Making whole function unchecked
+  
   if (array->items != NULL && array->count > 0) {
     memcpy(new_items, array->items, array->count * sizeof(_Ptr<JSON_Value>));
   }
-  parson_free((void*)array->items);
+  parson_free(array->items);
   array->capacity = new_capacity;
-  array->items = _Dynamic_bounds_cast<_Array_ptr<_Ptr<JSON_Value>>>(new_items, count(array->capacity));
+  array->items = new_items;
   return JSONSuccess;
 }
 
@@ -486,12 +526,16 @@ void  json_array_free(JSON_Array *array : itype(_Ptr<JSON_Array> ) ) {
   for (i = 0; i < array->count; i++) {
     json_value_free(array->items[i]);
   }
-  parson_free((void*)array->items);
-  parson_free((void*)array);
+  // TODO: this complains about the possibility of array->capacity being less than 1
+  // Will an if statement fix it?
+  if (array->capacity > 0) {
+    parson_free(_Dynamic_bounds_cast<_Array_ptr<_Ptr<JSON_Value>>>(array->items, byte_count(1)));
+  }
+  parson_free(array);
 }
 
 /* JSON Value */
-_Ptr<JSON_Value>  json_value_init_string_no_copy(char *string : itype(_Ptr<char> ) ) {
+_Ptr<JSON_Value>  json_value_init_string_no_copy(char *string : itype(_Nt_array_ptr<char>) ) {
   _Ptr<JSON_Value> new_value = (_Ptr<JSON_Value>) parson_malloc(sizeof(JSON_Value));
   if (!new_value) {
     return NULL;
@@ -503,7 +547,7 @@ _Ptr<JSON_Value>  json_value_init_string_no_copy(char *string : itype(_Ptr<char>
 }
 
 /* Parser */
-JSON_Status  skip_quotes(const char **string : itype(_Ptr<_Ptr<const char>> ) ) {
+JSON_Status  skip_quotes(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) {
   if (**string != '\"') {
     return JSONFailure;
   }
@@ -523,7 +567,8 @@ JSON_Status  skip_quotes(const char **string : itype(_Ptr<_Ptr<const char>> ) ) 
   return JSONSuccess;
 }
 
-int  parse_utf16(const char **unprocessed : itype(_Ptr<_Ptr<const char>> ) , char **processed : itype(_Ptr<_Ptr<char>> ) ) {
+// TODO: todo, I think this one needs bounds widening
+_Unchecked int  parse_utf16(const char **unprocessed, char **processed) {
   unsigned int cp, lead, trail;
   int parse_succeeded = 0;
   char *processed_ptr = *processed;
@@ -572,19 +617,21 @@ int  parse_utf16(const char **unprocessed : itype(_Ptr<_Ptr<const char>> ) , cha
 
 /* Copies and processes passed string up to supplied length.
    Example: "\u006Corem ipsum" -> lorem ipsum */
-_Ptr<char>  process_string(const char *input : itype(_Ptr<const char> ) , size_t len) {
-  const char *input_ptr = input;
+
+// TODO: Unchecked. Errors on using &. How to do this?
+_Unchecked char* process_string(const char *input : itype(_Nt_array_ptr<const char>), size_t len) : itype(_Nt_array_ptr<char>) {
+  const char* input_ptr = input;
   size_t initial_size = (len + 1) * sizeof(char);
   size_t final_size = 0;
-  char *output = NULL, *output_ptr = NULL;
-  output = (char*)parson_malloc(initial_size);
+  char* output = (char*)parson_malloc(initial_size);
   if (output == NULL) {
     goto error;
   }
-  output_ptr = output;
+  char* output_ptr = output;
   while ((*input_ptr != '\0') && (size_t)(input_ptr - input) < len) {
     if (*input_ptr == '\\') {
       input_ptr++;
+
       switch (*input_ptr) {
       case '\"': *output_ptr = '\"'; break;
       case '\\': *output_ptr = '\\'; break;
@@ -602,7 +649,7 @@ _Ptr<char>  process_string(const char *input : itype(_Ptr<const char> ) , size_t
       default:
         goto error;
       }
-    } else if ((unsigned char)*input_ptr < 0x20) {
+    } else if (*input_ptr < 0x20) {
       goto error; /* 0x00-0x19 are invalid characters for json string (http://www.ietf.org/rfc/rfc4627.txt) */
     } else {
       *output_ptr = *input_ptr;
@@ -614,8 +661,7 @@ _Ptr<char>  process_string(const char *input : itype(_Ptr<const char> ) , size_t
   /* resize to new length */
   final_size = (size_t)(output_ptr-output) + 1;
   /* todo: don't resize if final_size == initial_size */
-  _Array_ptr<void> tmp_resized_output : byte_count(final_size) = parson_malloc(final_size);
-  _Nt_array_ptr<char> resized_output : count(final_size) = (_Nt_array_ptr<char>)tmp_resized_output;
+  char* resized_output = (char*)parson_malloc(final_size);
   if (resized_output == NULL) {
     goto error;
   }
@@ -629,22 +675,28 @@ _Ptr<char>  process_string(const char *input : itype(_Ptr<const char> ) , size_t
 
 /* Return processed contents of a string between quotes and
    skips passed argument to a matching quote. */
-_Ptr<char>  get_quoted_string(const char **string : itype(_Ptr<_Ptr<const char>> ) ) {
-  const char *string_start = *string;
-  size_t string_len = 0;
+char* get_quoted_string(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) : itype(_Nt_array_ptr<char>) {
+  _Nt_array_ptr<const char> string_start = *string;
   JSON_Status status = skip_quotes(string);
   if (status != JSONSuccess) {
     return NULL;
   }
-  string_len = *string - string_start - 2; /* length without quotes */
-  return process_string(string_start + 1, string_len);
+  size_t string_len = *string - string_start - 2; /* length without quotes */
+  // TODO Annoying that string_start + 1 isn't calculated right
+  _Nt_array_ptr<const char> one_past_start = _Dynamic_bounds_cast<_Nt_array_ptr<const char>>(string_start + 1, count(0));
+   _Nt_array_ptr<char> to_return = process_string(one_past_start, string_len);
+  //_Nt_array_ptr<char> to_return = process_string(string_start + 1, string_len);
+  return to_return;
 }
 
-_Ptr<JSON_Value>  parse_value(const char **string : itype(_Ptr<_Ptr<const char>> ) , size_t nesting) {
+_Ptr<JSON_Value>  parse_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) , size_t nesting) {
   if (nesting > MAX_NESTING) {
     return NULL;
   }
-  SKIP_WHITESPACES(string);
+  // TODO Return used in checked scope must have a checked type or interface. Macro.
+  _Unchecked { 
+    SKIP_WHITESPACES(string);
+  }
   switch (**string) {
   case '{':
     return parse_object_value(string, nesting + 1);
@@ -665,70 +717,85 @@ _Ptr<JSON_Value>  parse_value(const char **string : itype(_Ptr<_Ptr<const char>>
   }
 }
 
-_Ptr<JSON_Value> parse_object_value(const char **string : itype(_Ptr<_Ptr<const char>> ) , size_t nesting) {
+_Ptr<JSON_Value> parse_object_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) , size_t nesting) {
   _Ptr<JSON_Value> output_value = json_value_init_object();
   _Ptr<JSON_Object> output_object = json_value_get_object(output_value);
-  _Ptr<char> new_key = NULL;
   if (output_value == NULL || **string != '{') {
     return NULL;
   }
-  SKIP_CHAR(string);
-  SKIP_WHITESPACES(string);
+  _Unchecked { 
+    SKIP_CHAR(string);
+    SKIP_WHITESPACES(string);
+  }
   if (**string == '}') { /* empty object */
     SKIP_CHAR(string);
     return output_value;
   }
   while (**string != '\0') {
-    new_key = get_quoted_string(string);
+    _Nt_array_ptr<char> new_key = get_quoted_string(string);
     if (new_key == NULL) {
       json_value_free(output_value);
       return NULL;
     }
-    SKIP_WHITESPACES(string);
+    //_Unchecked {
+      SKIP_WHITESPACES(string);
+      //}
     if (**string != ':') {
-      parson_free((void*)new_key);
+      free_nt_array_ptr(new_key);
       json_value_free(output_value);
       return NULL;
     }
-    SKIP_CHAR(string);
+    _Unchecked {
+      SKIP_CHAR(string);
+    }
     _Ptr<JSON_Value> new_value = parse_value(string, nesting);
     if (new_value == NULL) {
-      parson_free((void*)new_key);
+      free_nt_array_ptr(new_key);
       json_value_free(output_value);
       return NULL;
     }
     if (json_object_add(output_object, new_key, new_value) == JSONFailure) {
-      parson_free((void*)new_key);
+      free_nt_array_ptr(new_key);
       json_value_free(new_value);
       json_value_free(output_value);
       return NULL;
     }
-    parson_free((void*)new_key);
-    SKIP_WHITESPACES(string);
+    free_nt_array_ptr(new_key);
+    _Unchecked {
+      SKIP_WHITESPACES(string);
+    }
     if (**string != ',') {
       break;
     }
-    SKIP_CHAR(string);
+    //_Unchecked {
+      SKIP_CHAR(string);
+      SKIP_WHITESPACES(string);
+      //}
+  }
+  _Unchecked {
     SKIP_WHITESPACES(string);
   }
-  SKIP_WHITESPACES(string);
   if (**string != '}' || /* Trim object after parsing is over */
       json_object_resize(output_object, json_object_get_count(output_object)) == JSONFailure) {
     json_value_free(output_value);
     return NULL;
   }
-  SKIP_CHAR(string);
+  _Unchecked {
+    SKIP_CHAR(string);
+  }
   return output_value;
 }
 
-_Ptr<JSON_Value>  parse_array_value(const char **string : itype(_Ptr<_Ptr<const char>> ) , size_t nesting) {
+_Ptr<JSON_Value>  parse_array_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) , size_t nesting) {
   _Ptr<JSON_Value> output_value = json_value_init_array();
   _Ptr<JSON_Array> output_array = json_value_get_array(output_value);
   if (!output_value || **string != '[') {
     return NULL;
   }
-  SKIP_CHAR(string);
-  SKIP_WHITESPACES(string);
+  _Unchecked {
+    SKIP_CHAR(string);
+    SKIP_WHITESPACES(string);
+  }
   if (**string == ']') { /* empty array */
     SKIP_CHAR(string);
     return output_value;
@@ -744,16 +811,24 @@ _Ptr<JSON_Value>  parse_array_value(const char **string : itype(_Ptr<_Ptr<const 
       json_value_free(output_value);
       return NULL;
     }
-    SKIP_WHITESPACES(string);
+    _Unchecked {
+      SKIP_WHITESPACES(string);
+    }
     if (**string != ',') {
       break;
     }
-    SKIP_CHAR(string);
+    _Unchecked { 
+      SKIP_CHAR(string);
+      SKIP_WHITESPACES(string);
+    }
+  }
+  _Unchecked {
     SKIP_WHITESPACES(string);
   }
-  SKIP_WHITESPACES(string);
-  if (**string != ']' || /* Trim array after parsing is over */
-      json_array_resize(output_array, json_array_get_count(output_array)) == JSONFailure) {
+  /* Trim array after parsing is over */
+  if (**string != ']' || 
+      json_array_resize(output_array, json_array_get_count(output_array)) == JSONFailure)
+  {
     json_value_free(output_value);
     return NULL;
   }
@@ -761,22 +836,23 @@ _Ptr<JSON_Value>  parse_array_value(const char **string : itype(_Ptr<_Ptr<const 
   return output_value;
 }
 
-_Ptr<JSON_Value> parse_string_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) {
-  _Ptr<char> new_string = get_quoted_string(string);
+_Ptr<JSON_Value> parse_string_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) {
+  _Nt_array_ptr<char> new_string = get_quoted_string(string);
   if (new_string == NULL) {
     return NULL;
   }
   _Ptr<JSON_Value> value = json_value_init_string_no_copy(new_string);
   if (value == NULL) {
-    parson_free((void*)new_string);
+    free_nt_array_ptr(new_string);
     return NULL;
   }
   return value;
 }
 
-JSON_Value* parse_boolean_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
+JSON_Value* parse_boolean_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
   size_t true_token_size = SIZEOF_TOKEN("true");
   size_t false_token_size = SIZEOF_TOKEN("false");
+  // TODO: Cannot prove bounds for string big enough to cmp. Is that ok?
   if (strncmp("true", *string, true_token_size) == 0) {
     *string += true_token_size;
     return json_value_init_boolean(1);
@@ -787,10 +863,11 @@ JSON_Value* parse_boolean_value(const char **string : itype(_Ptr<_Ptr<const char
   return NULL;
 }
 
-JSON_Value* parse_number_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
-  char *end;
+/* TODO: Don't have a way to initialize end properly. Leaving unchecked. */
+_Unchecked JSON_Value* parse_number_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
   double number = 0;
   errno = 0;
+  char* end;
   number = strtod(*string, &end);
   if (errno || !is_decimal(*string, end - *string)) {
     return NULL;
@@ -799,7 +876,7 @@ JSON_Value* parse_number_value(const char **string : itype(_Ptr<_Ptr<const char>
   return json_value_init_number(number);
 }
 
-JSON_Value* parse_null_value(const char **string : itype(_Ptr<_Ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
+JSON_Value* parse_null_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
   size_t token_size = SIZEOF_TOKEN("null");
   if (strncmp("null", *string, token_size) == 0) {
     *string += token_size;
@@ -819,9 +896,11 @@ JSON_Value* parse_null_value(const char **string : itype(_Ptr<_Ptr<const char>> 
     if (buf != NULL) { buf += written; }                                \
     written_total += written; } while(0)
 
-int  json_serialize_to_buffer_r(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , char *buf : itype(_Ptr<char> ) , int level, int is_pretty, char *num_buf : itype(_Ptr<char> ) )
+int  json_serialize_to_buffer_r(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , char *buf : itype(_Nt_array_ptr<char> ) , int level, int is_pretty, char *num_buf : itype(_Nt_array_ptr<char> ) )
 {
-  const char *key = NULL, *string = NULL;
+  // TODO Can't declare inside switch, so I think this has to be initialized like this?
+  _Nt_array_ptr<const char> key = "";
+  _Nt_array_ptr<const char> string = "";
   _Ptr<JSON_Value> temp_value = NULL;
   _Ptr<JSON_Array> array = NULL;
   _Ptr<JSON_Object> object = NULL;
@@ -911,7 +990,7 @@ int  json_serialize_to_buffer_r(const JSON_Value *value : itype(_Ptr<const JSON_
     APPEND_STRING("}");
     return written_total;
   case JSONString:
-    string = (const char*)json_value_get_string(value);
+    string = json_value_get_string(value);
     if (string == NULL) {
       return -1;
     }
@@ -936,7 +1015,10 @@ int  json_serialize_to_buffer_r(const JSON_Value *value : itype(_Ptr<const JSON_
     if (buf != NULL) {
       num_buf = buf;
     }
-    written = sprintf(num_buf, FLOAT_FORMAT, num);
+    // TODO Cannot use a variable arguments function. How to do this? unchecked
+    _Unchecked {
+      written = sprintf(num_buf, FLOAT_FORMAT, num);
+    }
     if (written < 0) {
       return -1;
     }
@@ -955,7 +1037,7 @@ int  json_serialize_to_buffer_r(const JSON_Value *value : itype(_Ptr<const JSON_
   }
 }
 
-int  json_serialize_string(const char *string : itype(_Ptr<const char> ) , char *buf : itype(_Ptr<char> ) ) {
+int  json_serialize_string(const char *string : itype(_Nt_array_ptr<const char> ) , char *buf : itype(_Nt_array_ptr<char>) ) {
   size_t i = 0, len = strlen(string);
   char c = '\0';
   int written = -1, written_total = 0;
@@ -1004,19 +1086,22 @@ int  json_serialize_string(const char *string : itype(_Ptr<const char> ) , char 
     case '\x1e': APPEND_STRING("\\u001e"); break;
     case '\x1f': APPEND_STRING("\\u001f"); break;
     default:
-      if (buf != NULL) {
-        buf[0] = c;
-        buf += 1;
+      // TODO Odd error about "source bounds are an empty range"
+      _Unchecked {
+        if (buf != NULL) {
+          buf[0] = c;
+          buf += 1;
+        }
+        written_total += 1;
+        break;
       }
-      written_total += 1;
-      break;
     }
   }
   APPEND_STRING("\"");
   return written_total;
 }
 
-int  append_indent(char *buf : itype(_Ptr<char> ) , int level) {
+int  append_indent(char *buf : itype(_Nt_array_ptr<char> ) , int level) {
   int i;
   int written = -1, written_total = 0;
   for (i = 0; i < level; i++) {
@@ -1025,117 +1110,130 @@ int  append_indent(char *buf : itype(_Ptr<char> ) , int level) {
   return written_total;
 }
 
-int  append_string(char *buf : itype(_Ptr<char> ) , const char *string : itype(_Ptr<const char> ) ) {
+int  append_string(char *buf : itype(_Nt_array_ptr<char> ) , const char *string : itype(_Nt_array_ptr<const char> ) ) {
   if (buf == NULL) {
     return (int)strlen(string);
   }
-  return sprintf(buf, "%s", string);
+  // TODO variable arguments function error unchecked for now
+  int ret = -1;
+  _Unchecked {
+   ret = sprintf(buf, "%s", string);
+  }
+  return ret;
 }
 
 #undef APPEND_STRING
 #undef APPEND_INDENT
 
 /* Parser API */
-_Ptr<JSON_Value>  json_parse_file(const char *filename : itype(_Ptr<const char> ) ) {
-  _Ptr<char> file_contents = read_file(filename);
+_Ptr<JSON_Value>  json_parse_file(const char *filename : itype(_Nt_array_ptr<const char> ) ) {
+  _Nt_array_ptr<char> file_contents = read_file(filename);
   _Ptr<JSON_Value> output_value =  NULL;
   if (file_contents == NULL) {
     return NULL;
   }
   output_value = json_parse_string(file_contents);
-  parson_free((void*)file_contents);
+  free_nt_array_ptr(file_contents);
   return output_value;
 }
 
-_Ptr<JSON_Value>  json_parse_file_with_comments(const char *filename : itype(_Ptr<const char> ) ) {
-  _Ptr<char> file_contents = read_file(filename);
+_Ptr<JSON_Value>  json_parse_file_with_comments(const char *filename : itype(_Nt_array_ptr<const char> ) ) {
+  _Nt_array_ptr<char> file_contents = read_file(filename);
   _Ptr<JSON_Value> output_value =  NULL;
   if (file_contents == NULL) {
     return NULL;
   }
   output_value = json_parse_string_with_comments(file_contents);
-  parson_free((void*)file_contents);
+  free_nt_array_ptr(file_contents);
   return output_value;
 }
 
-_Ptr<JSON_Value>  json_parse_string(const char *string : itype(_Ptr<const char> ) ) {
+_Ptr<JSON_Value>  json_parse_string(const char *string : itype(_Nt_array_ptr<const char> ) ) {
   if (string == NULL) {
     return NULL;
   }
-  if (string[0] == '\xEF' && string[1] == '\xBB' && string[2] == '\xBF') {
-    string = string + 3; /* Support for UTF-8 BOM */
+  // TODO Bounds widening, unchecked for now
+  _Unchecked {
+    if (string[0] == '\xEF' && string[1] == '\xBB' && string[2] == '\xBF') {
+      string = string + 3; /* Support for UTF-8 BOM */
+    }
+  
+  return parse_value(&string, 0);
   }
-  return parse_value((const char**)&string, 0);
 }
 
-_Ptr<JSON_Value>  json_parse_string_with_comments(const char *string : itype(_Ptr<const char> ) ) {
-  _Ptr<char> string_mutable_copy = parson_strdup(string);
+// TODO Function uses address of - unchecked for now.
+_Unchecked _Ptr<JSON_Value>  json_parse_string_with_comments(const char *string : itype(_Nt_array_ptr<const char> ) ) {
+  char* string_mutable_copy = (char*)parson_strdup(string);
   if (string_mutable_copy == NULL) {
     return NULL;
   }
   remove_comments(string_mutable_copy, "/*", "*/");
   remove_comments(string_mutable_copy, "//", "\n");
-  _Ptr<char> string_mutable_copy_ptr = string_mutable_copy;
+  char* string_mutable_copy_ptr = string_mutable_copy;
   _Ptr<JSON_Value> result = parse_value((const char**)&string_mutable_copy_ptr, 0);
-  parson_free((void*)string_mutable_copy);
+  
+  parson_free(string_mutable_copy);
   return result;
 }
 
 /* JSON Object API */
 
-_Ptr<JSON_Value>  json_object_get_value(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+_Ptr<JSON_Value>  json_object_get_value(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   if (object == NULL || name == NULL) {
     return NULL;
   }
   return json_object_nget_value(object, name, strlen(name));
 }
 
-_Ptr<const char>  json_object_get_string(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+ const char*  json_object_get_string(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) : itype(_Nt_array_ptr<const char>) {
   return json_value_get_string(json_object_get_value(object, name));
 }
 
-double  json_object_get_number(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+double  json_object_get_number(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_value_get_number(json_object_get_value(object, name));
 }
 
-_Ptr<JSON_Object>  json_object_get_object(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+_Ptr<JSON_Object>  json_object_get_object(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_value_get_object(json_object_get_value(object, name));
 }
 
-_Ptr<JSON_Array>  json_object_get_array(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+_Ptr<JSON_Array>  json_object_get_array(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_value_get_array(json_object_get_value(object, name));
 }
 
-int  json_object_get_boolean(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+int  json_object_get_boolean(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_value_get_boolean(json_object_get_value(object, name));
 }
 
-_Ptr<JSON_Value>  json_object_dotget_value(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
-  const char *dot_position = strchr(name, '.');
+_Ptr<JSON_Value>  json_object_dotget_value(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
+  _Nt_array_ptr<const char> dot_position = strchr(name, '.');
   if (!dot_position) {
     return json_object_get_value(object, name);
   }
   object = json_value_get_object(json_object_nget_value(object, name, dot_position - name));
-  return json_object_dotget_value(object, dot_position + 1);
+  // TODO Adding tmp to deal with bounds issue
+  _Nt_array_ptr<const char> right_after_dot = _Dynamic_bounds_cast<_Nt_array_ptr<const char>>(dot_position + 1, count(0));
+  return json_object_dotget_value(object, right_after_dot);
 }
 
-_Ptr<const char>  json_object_dotget_string(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+_Ptr<const char>  json_object_dotget_string(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_value_get_string(json_object_dotget_value(object, name));
 }
 
-double  json_object_dotget_number(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+double  json_object_dotget_number(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_value_get_number(json_object_dotget_value(object, name));
 }
 
-_Ptr<JSON_Object>  json_object_dotget_object(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+_Ptr<JSON_Object>  json_object_dotget_object(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_value_get_object(json_object_dotget_value(object, name));
 }
 
-_Ptr<JSON_Array>  json_object_dotget_array(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+_Ptr<JSON_Array>  json_object_dotget_array(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_value_get_array(json_object_dotget_value(object, name));
 }
 
-int  json_object_dotget_boolean(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+int  json_object_dotget_boolean(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_value_get_boolean(json_object_dotget_value(object, name));
 }
 
@@ -1143,7 +1241,7 @@ size_t  json_object_get_count(const JSON_Object *object : itype(_Ptr<const JSON_
   return object ? object->count : 0;
 }
 
-const char*  json_object_get_name(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , size_t index) {
+const char*  json_object_get_name(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , size_t index) : itype(_Nt_array_ptr<const char>) {
   if (object == NULL || index >= json_object_get_count(object)) {
     return NULL;
   }
@@ -1161,20 +1259,20 @@ _Ptr<JSON_Value> json_object_get_wrapping_value(const JSON_Object *object : ityp
   return object->wrapping_value;
 }
 
-int  json_object_has_value(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+int  json_object_has_value(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_object_get_value(object, name) != NULL;
 }
 
-int  json_object_has_value_of_type(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , JSON_Value_Type type) {
+int  json_object_has_value_of_type(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) , JSON_Value_Type type) {
   _Ptr<JSON_Value> val = json_object_get_value(object, name);
   return val != NULL && json_value_get_type(val) == type;
 }
 
-int  json_object_dothas_value(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+int  json_object_dothas_value(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_object_dotget_value(object, name) != NULL;
 }
 
-int  json_object_dothas_value_of_type(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , JSON_Value_Type type) {
+int  json_object_dothas_value_of_type(const JSON_Object *object : itype(_Ptr<const JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) , JSON_Value_Type type) {
   _Ptr<JSON_Value> val = json_object_dotget_value(object, name);
   return val != NULL && json_value_get_type(val) == type;
 }
@@ -1228,7 +1326,7 @@ _Ptr<JSON_Array> json_value_get_array(const JSON_Value *value : itype(_Ptr<const
   return json_value_get_type(value) == JSONArray ? value->value.array : NULL;
 }
 
-_Ptr<const char>  json_value_get_string(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) ) {
+const char*  json_value_get_string(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) ) : itype(_Nt_array_ptr<const char>) {
   return json_value_get_type(value) == JSONString ? value->value.string : NULL;
 }
 
@@ -1250,7 +1348,7 @@ void  json_value_free(JSON_Value *value : itype(_Ptr<JSON_Value> ) ) {
     json_object_free(value->value.object);
     break;
   case JSONString:
-    parson_free((void*)value->value.string);
+    free_nt_array_ptr(value->value.string);
     break;
   case JSONArray:
     json_array_free(value->value.array);
@@ -1270,7 +1368,7 @@ _Ptr<JSON_Value> json_value_init_object(void) {
   new_value->type = JSONObject;
   new_value->value.object = json_object_init(new_value);
   if (!new_value->value.object) {
-    parson_free((void*)new_value);
+    parson_free(new_value);
     return NULL;
   }
   return new_value;
@@ -1285,28 +1383,29 @@ _Ptr<JSON_Value> json_value_init_array(void) {
   new_value->type = JSONArray;
   new_value->value.array = json_array_init(new_value);
   if (!new_value->value.array) {
-    parson_free((void*)new_value);
+    parson_free(new_value);
     return NULL;
   }
   return new_value;
 }
 
-_Ptr<JSON_Value>  json_value_init_string(const char *string : itype(_Ptr<const char> ) ) {
+_Ptr<JSON_Value>  json_value_init_string(const char *string : itype(_Nt_array_ptr<const char> ) ) {
   size_t string_len = 0;
   if (string == NULL) {
     return NULL;
   }
   string_len = strlen(string);
-  if (!is_valid_utf8(string, string_len)) {
+  if (!is_valid_utf8(_Dynamic_bounds_cast<_Nt_array_ptr<const char>>(string, count(string_len)),
+                     string_len)) {
     return NULL;
   }
-  _Ptr<char> copy = parson_strndup(string, string_len);
+  _Nt_array_ptr<char> copy = parson_strndup(_Dynamic_bounds_cast<_Nt_array_ptr<const char>>(string, count(string_len)), string_len);
   if (copy == NULL) {
     return NULL;
   }
   _Ptr<JSON_Value> value = json_value_init_string_no_copy(copy);
   if (value == NULL) {
-    parson_free((void*)copy);
+    free_nt_array_ptr(copy);
   }
   return value;
 }
@@ -1350,13 +1449,12 @@ _Ptr<JSON_Value> json_value_init_null(void) {
 _Ptr<JSON_Value>  json_value_deep_copy(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) ) {
   size_t i = 0;
   _Ptr<JSON_Value> return_value = NULL, temp_value_copy = NULL, temp_value = NULL;
-  _Ptr<const char> temp_string = NULL;
-  const char* temp_key = NULL;
-  _Ptr<char> temp_string_copy = NULL;
   _Ptr<JSON_Array> temp_array = NULL;
   _Ptr<JSON_Array> temp_array_copy = NULL;
   _Ptr<JSON_Object> temp_object = NULL;
   _Ptr<JSON_Object> temp_object_copy = NULL;
+  _Nt_array_ptr<const char> temp_string = NULL;
+  _Nt_array_ptr<char> temp_string_copy = NULL;
 
   switch (json_value_get_type(value)) {
   case JSONArray:
@@ -1388,7 +1486,7 @@ _Ptr<JSON_Value>  json_value_deep_copy(const JSON_Value *value : itype(_Ptr<cons
     }
     temp_object_copy = json_value_get_object(return_value);
     for (i = 0; i < json_object_get_count(temp_object); i++) {
-      temp_key = json_object_get_name(temp_object, i);
+      _Nt_array_ptr<const char> temp_key = json_object_get_name(temp_object, i);
       temp_value = json_object_get_value(temp_object, temp_key);
       temp_value_copy = json_value_deep_copy(temp_value);
       if (temp_value_copy == NULL) {
@@ -1417,7 +1515,7 @@ _Ptr<JSON_Value>  json_value_deep_copy(const JSON_Value *value : itype(_Ptr<cons
     }
     return_value = json_value_init_string_no_copy(temp_string_copy);
     if (return_value == NULL) {
-      parson_free((void*)temp_string_copy);
+      free_nt_array_ptr(temp_string_copy);
     }
     return return_value;
   case JSONNull:
@@ -1430,32 +1528,34 @@ _Ptr<JSON_Value>  json_value_deep_copy(const JSON_Value *value : itype(_Ptr<cons
 }
 
 size_t  json_serialization_size(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) ) {
-  char num_buf[1100]; /* recursively allocating buffer on stack is a bad idea, so let's do it only once */
+  char num_buf _Nt_checked[1100]; /* recursively allocating buffer on stack is a bad idea, so let's do it only once */
   int res = json_serialize_to_buffer_r(value, NULL, 0, 0, num_buf);
   return res < 0 ? 0 : (size_t)(res + 1);
 }
 
-JSON_Status  json_serialize_to_buffer(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , char *buf : itype(_Ptr<char> ) , size_t buf_size_in_bytes) {
+JSON_Status  json_serialize_to_buffer(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , char *buf : itype(_Nt_array_ptr<char> ) byte_count(buf_size_in_bytes) , size_t buf_size_in_bytes) {
   int written = -1;
   size_t needed_size_in_bytes = json_serialization_size(value);
   if (needed_size_in_bytes == 0 || buf_size_in_bytes < needed_size_in_bytes) {
     return JSONFailure;
   }
-  written = json_serialize_to_buffer_r(value, buf, 0, 0, NULL);
+  // TODO Compiler math buf_size_in_bytes >= 0
+  written = json_serialize_to_buffer_r(value,
+                                       _Dynamic_bounds_cast<_Nt_array_ptr<char>>(buf, count(0)),
+                                       0, 0, NULL);
   if (written < 0) {
     return JSONFailure;
   }
   return JSONSuccess;
 }
 
-JSON_Status  json_serialize_to_file(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , const char *filename : itype(_Ptr<const char> ) ) {
+JSON_Status  json_serialize_to_file(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , const char *filename : itype(_Nt_array_ptr<const char> ) ) {
   JSON_Status return_code = JSONSuccess;
-  FILE *fp = NULL;
-  char *serialized_string = json_serialize_to_string(value);
+  _Nt_array_ptr<char> serialized_string = json_serialize_to_string(value);
   if (serialized_string == NULL) {
     return JSONFailure;
   }
-  fp = fopen (filename, "w");
+  _Ptr<FILE> fp = fopen (filename, "w");
   if (fp == NULL) {
     json_free_serialized_string(serialized_string);
     return JSONFailure;
@@ -1470,52 +1570,50 @@ JSON_Status  json_serialize_to_file(const JSON_Value *value : itype(_Ptr<const J
   return return_code;
 }
 
-char*  json_serialize_to_string(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) ) {
+char*  json_serialize_to_string(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) ) : itype(_Nt_array_ptr<char>) {
   JSON_Status serialization_result = JSONFailure;
   size_t buf_size_bytes = json_serialization_size(value);
-  char *buf = NULL;
   if (buf_size_bytes == 0) {
     return NULL;
   }
-  buf = (char*)parson_malloc(buf_size_bytes);
+  _Nt_array_ptr<char> buf : byte_count(buf_size_bytes) = (_Nt_array_ptr<char>)parson_malloc(buf_size_bytes);
   if (buf == NULL) {
     return NULL;
   }
   serialization_result = json_serialize_to_buffer(value, buf, buf_size_bytes);
   if (serialization_result == JSONFailure) {
-    json_free_serialized_string(buf);
+    json_free_serialized_string(_Dynamic_bounds_cast<_Nt_array_ptr<char>>(buf, count(0)));
     return NULL;
   }
   return buf;
 }
 
 size_t  json_serialization_size_pretty(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) ) {
-  char num_buf[1100]; /* recursively allocating buffer on stack is a bad idea, so let's do it only once */
+  char num_buf _Nt_checked[1100]; /* recursively allocating buffer on stack is a bad idea, so let's do it only once */
   int res = json_serialize_to_buffer_r(value, NULL, 0, 1, num_buf);
   return res < 0 ? 0 : (size_t)(res + 1);
 }
 
-JSON_Status  json_serialize_to_buffer_pretty(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , char *buf : itype(_Ptr<char> ) , size_t buf_size_in_bytes) {
+JSON_Status  json_serialize_to_buffer_pretty(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , char *buf : itype(_Nt_array_ptr<char> ) byte_count(buf_size_in_bytes) , size_t buf_size_in_bytes) {
   int written = -1;
   size_t needed_size_in_bytes = json_serialization_size_pretty(value);
   if (needed_size_in_bytes == 0 || buf_size_in_bytes < needed_size_in_bytes) {
     return JSONFailure;
   }
-  written = json_serialize_to_buffer_r(value, buf, 0, 1, NULL);
+  written = json_serialize_to_buffer_r(value, _Dynamic_bounds_cast<_Nt_array_ptr<char>>(buf, count(0)), 0, 1, NULL);
   if (written < 0) {
     return JSONFailure;
   }
   return JSONSuccess;
 }
 
-JSON_Status  json_serialize_to_file_pretty(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , const char *filename : itype(_Ptr<const char> ) ) {
+JSON_Status  json_serialize_to_file_pretty(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) , const char *filename : itype(_Nt_array_ptr<const char> ) ) {
   JSON_Status return_code = JSONSuccess;
-  FILE *fp = NULL;
-  char *serialized_string = json_serialize_to_string_pretty(value);
+  _Nt_array_ptr<char> serialized_string = json_serialize_to_string_pretty(value);
   if (serialized_string == NULL) {
     return JSONFailure;
   }
-  fp = fopen (filename, "w");
+  _Ptr<FILE> fp = fopen (filename, "w");
   if (fp == NULL) {
     json_free_serialized_string(serialized_string);
     return JSONFailure;
@@ -1530,30 +1628,33 @@ JSON_Status  json_serialize_to_file_pretty(const JSON_Value *value : itype(_Ptr<
   return return_code;
 }
 
-char*  json_serialize_to_string_pretty(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) ) {
+char*  json_serialize_to_string_pretty(const JSON_Value *value : itype(_Ptr<const JSON_Value> ) ) : itype(_Nt_array_ptr<char>) {
   JSON_Status serialization_result = JSONFailure;
   size_t buf_size_bytes = json_serialization_size_pretty(value);
-  char *buf = NULL;
   if (buf_size_bytes == 0) {
     return NULL;
   }
-  buf = (char*)parson_malloc(buf_size_bytes);
+  _Nt_array_ptr<char> buf : byte_count(buf_size_bytes) = (_Nt_array_ptr<char>)parson_malloc(buf_size_bytes);
   if (buf == NULL) {
     return NULL;
   }
   serialization_result = json_serialize_to_buffer_pretty(value, buf, buf_size_bytes);
   if (serialization_result == JSONFailure) {
-    json_free_serialized_string(buf);
+    json_free_serialized_string(_Dynamic_bounds_cast<_Nt_array_ptr<char>>(buf, count(0)));
     return NULL;
   }
   return buf;
 }
 
-void  json_free_serialized_string(char *string : itype(_Ptr<char> ) ) {
-  parson_free(string);
+void  json_free_serialized_string(char *string : itype(_Nt_array_ptr<char> ) ) {
+  free_nt_array_ptr(string);
 }
 
-JSON_Status  json_array_remove(JSON_Array *array : itype(_Ptr<JSON_Array> ) , size_t ix) {
+// TODO: Once again cannot prove either argument of the memmove
+// This looks quite straightforward to prove as presented, but it again relies
+// on a relationship between count and capacity to be maintained that we cannot
+// yet prove. Had to remove bounds-safe interface to force it to be unchecked.
+_Unchecked JSON_Status json_array_remove(JSON_Array *array : itype(_Ptr<JSON_Array>), size_t ix) {
   size_t to_move_bytes = 0;
   if (array == NULL || ix >= json_array_get_count(array)) {
     return JSONFailure;
@@ -1561,9 +1662,6 @@ JSON_Status  json_array_remove(JSON_Array *array : itype(_Ptr<JSON_Array> ) , si
   json_value_free(json_array_get_value(array, ix));
   to_move_bytes = (json_array_get_count(array) - 1 - ix) * sizeof(_Ptr<JSON_Value>);
 
-  // TODO: Once again cannot prove either argument
-  // This looks quite straightforward to prove as presented, but it again relies on a
-  // relationship between count and capacity to be maintained that we cannot yet prove
   memmove(array->items + ix, array->items + ix + 1, to_move_bytes);
   array->count -= 1;
   return JSONSuccess;
@@ -1579,7 +1677,7 @@ JSON_Status  json_array_replace_value(JSON_Array *array : itype(_Ptr<JSON_Array>
   return JSONSuccess;
 }
 
-JSON_Status  json_array_replace_string(JSON_Array *array : itype(_Ptr<JSON_Array> ) , size_t i, const char *string : itype(_Ptr<const char> ) ) {
+JSON_Status  json_array_replace_string(JSON_Array *array : itype(_Ptr<JSON_Array> ) , size_t i, const char *string : itype(_Nt_array_ptr<const char> ) ) {
   _Ptr<JSON_Value> value = json_value_init_string(string);
   if (value == NULL) {
     return JSONFailure;
@@ -1646,7 +1744,7 @@ JSON_Status  json_array_append_value(JSON_Array *array : itype(_Ptr<JSON_Array> 
   return json_array_add(array, value);
 }
 
-JSON_Status  json_array_append_string(JSON_Array *array : itype(_Ptr<JSON_Array> ) , const char *string : itype(_Ptr<const char> ) ) {
+JSON_Status  json_array_append_string(JSON_Array *array : itype(_Ptr<JSON_Array> ) , const char *string : itype(_Nt_array_ptr<const char> ) ) {
   _Ptr<JSON_Value> value = json_value_init_string(string);
   if (value == NULL) {
     return JSONFailure;
@@ -1694,7 +1792,7 @@ JSON_Status  json_array_append_null(JSON_Array *array : itype(_Ptr<JSON_Array> )
   return JSONSuccess;
 }
 
-JSON_Status  json_object_set_value(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , JSON_Value *value : itype(_Ptr<JSON_Value> ) ) {
+JSON_Status  json_object_set_value(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) , JSON_Value *value : itype(_Ptr<JSON_Value> ) ) {
   size_t i = 0;
   if (object == NULL || name == NULL || value == NULL || value->parent != NULL) {
     return JSONFailure;
@@ -1714,52 +1812,54 @@ JSON_Status  json_object_set_value(JSON_Object *object : itype(_Ptr<JSON_Object>
   return json_object_add(object, name, value);
 }
 
-JSON_Status  json_object_set_string(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , const char *string : itype(_Ptr<const char> ) ) {
+JSON_Status  json_object_set_string(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) , const char *string : itype(_Nt_array_ptr<const char> ) ) {
   return json_object_set_value(object, name, json_value_init_string(string));
 }
 
-JSON_Status  json_object_set_number(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , double number) {
+JSON_Status  json_object_set_number(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) , double number) {
   return json_object_set_value(object, name, json_value_init_number(number));
 }
 
-JSON_Status  json_object_set_boolean(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , int boolean) {
+JSON_Status  json_object_set_boolean(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) , int boolean) {
   return json_object_set_value(object, name, json_value_init_boolean(boolean));
 }
 
-JSON_Status  json_object_set_null(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+JSON_Status  json_object_set_null(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   return json_object_set_value(object, name, json_value_init_null());
 }
 
-JSON_Status  json_object_dotset_value(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , JSON_Value *value : itype(_Ptr<JSON_Value> ) ) {
-  const char *dot_pos = NULL;
+JSON_Status  json_object_dotset_value(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) , JSON_Value *value : itype(_Ptr<JSON_Value> ) ) {
   if (object == NULL || name == NULL || value == NULL) {
     return JSONFailure;
   }
-  dot_pos = strchr(name, '.');
+  _Nt_array_ptr<const char> dot_pos = strchr(name, '.');
   if (dot_pos == NULL) {
     return json_object_set_value(object, name, value);
   } else {
-    _Ptr<char> current_name = parson_strndup(name, dot_pos - name);
+    _Nt_array_ptr<char> current_name =
+      parson_strndup(_Dynamic_bounds_cast<_Nt_array_ptr<char>>(name, bounds(name, name + (size_t)(dot_pos - name))), (size_t)(dot_pos - name));
     _Ptr<JSON_Object> temp_obj = json_object_get_object(object, current_name);
     if (temp_obj == NULL) {
       _Ptr<JSON_Value> new_value = json_value_init_object();
       if (new_value == NULL) {
-        parson_free((void*)current_name);
+        free_nt_array_ptr(current_name);
         return JSONFailure;
       }
       if (json_object_add(object, current_name, new_value) == JSONFailure) {
         json_value_free(new_value);
-        parson_free((void*)current_name);
+        free_nt_array_ptr(current_name);
         return JSONFailure;
       }
       temp_obj = json_object_get_object(object, current_name);
     }
-    parson_free((void*)current_name);
-    return json_object_dotset_value(temp_obj, dot_pos + 1, value);
+    free_nt_array_ptr(current_name);
+    // TODO Here to make the compiler less confused
+    _Nt_array_ptr<const char> one_past_dot = _Dynamic_bounds_cast<_Nt_array_ptr<const char>>(dot_pos + 1, count(0));
+    return json_object_dotset_value(temp_obj, one_past_dot, value);
   }
 }
 
-JSON_Status  json_object_dotset_string(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , const char *string : itype(_Ptr<const char> ) ) {
+JSON_Status  json_object_dotset_string(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) , const char *string : itype(_Nt_array_ptr<const char> ) ) {
   _Ptr<JSON_Value> value = json_value_init_string(string);
   if (value == NULL) {
     return JSONFailure;
@@ -1771,7 +1871,7 @@ JSON_Status  json_object_dotset_string(JSON_Object *object : itype(_Ptr<JSON_Obj
   return JSONSuccess;
 }
 
-JSON_Status  json_object_dotset_number(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , double number) {
+JSON_Status  json_object_dotset_number(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) , double number) {
   _Ptr<JSON_Value> value = json_value_init_number(number);
   if (value == NULL) {
     return JSONFailure;
@@ -1783,7 +1883,7 @@ JSON_Status  json_object_dotset_number(JSON_Object *object : itype(_Ptr<JSON_Obj
   return JSONSuccess;
 }
 
-JSON_Status  json_object_dotset_boolean(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) , int boolean) {
+JSON_Status  json_object_dotset_boolean(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) , int boolean) {
   _Ptr<JSON_Value> value = json_value_init_boolean(boolean);
   if (value == NULL) {
     return JSONFailure;
@@ -1795,7 +1895,7 @@ JSON_Status  json_object_dotset_boolean(JSON_Object *object : itype(_Ptr<JSON_Ob
   return JSONSuccess;
 }
 
-JSON_Status  json_object_dotset_null(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+JSON_Status  json_object_dotset_null(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   _Ptr<JSON_Value> value = json_value_init_null();
   if (value == NULL) {
     return JSONFailure;
@@ -1807,7 +1907,7 @@ JSON_Status  json_object_dotset_null(JSON_Object *object : itype(_Ptr<JSON_Objec
   return JSONSuccess;
 }
 
-JSON_Status  json_object_remove(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
+JSON_Status  json_object_remove(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
   size_t i = 0, last_item_index = 0;
   if (object == NULL || json_object_get_value(object, name) == NULL) {
     return JSONFailure;
@@ -1815,7 +1915,7 @@ JSON_Status  json_object_remove(JSON_Object *object : itype(_Ptr<JSON_Object> ) 
   last_item_index = json_object_get_count(object) - 1;
   for (i = 0; i < json_object_get_count(object); i++) {
     if (strcmp(object->names[i], name) == 0) {
-      parson_free(object->names[i]);
+      free_nt_array_ptr(object->names[i]);
       json_value_free(object->values[i]);
       if (i != last_item_index) { /* Replace key value pair with one from the end */
         object->names[i] = object->names[last_item_index];
@@ -1828,18 +1928,22 @@ JSON_Status  json_object_remove(JSON_Object *object : itype(_Ptr<JSON_Object> ) 
   return JSONFailure; /* No execution path should end here */
 }
 
-JSON_Status  json_object_dotremove(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Ptr<const char> ) ) {
-  const char* dot_pos = strchr(name, '.');
+JSON_Status  json_object_dotremove(JSON_Object *object : itype(_Ptr<JSON_Object> ) , const char *name : itype(_Nt_array_ptr<const char> ) ) {
+  _Nt_array_ptr<char> dot_pos = strchr(name, '.');
   if (dot_pos == NULL) {
     return json_object_remove(object, name);
   } else {
-    _Ptr<char> current_name = parson_strndup(name, dot_pos - name);
+    // This line was the original source of the compiler message in bug #534.
+    // Explicitly doing the size_t cast seems to resolve that problem. The dynamic bounds cast
+    // was also added after the bug was reported. 
+    _Nt_array_ptr<char> current_name = parson_strndup(_Dynamic_bounds_cast<_Nt_array_ptr<char>>(name, bounds(name, name + (size_t)(dot_pos - name))), (size_t)(dot_pos - name));
     _Ptr<JSON_Object> temp_obj = json_object_get_object(object, current_name);
-    parson_free((void*)current_name);
+    free_nt_array_ptr(current_name);
     if (temp_obj == NULL) {
       return JSONFailure;
     }
-    return json_object_dotremove(temp_obj, dot_pos + 1);
+    _Nt_array_ptr<const char> one_past_dot = _Dynamic_bounds_cast<_Nt_array_ptr<const char>>(dot_pos + 1, count(0));
+    return json_object_dotremove(temp_obj, one_past_dot);
   }
 }
 
@@ -1849,7 +1953,7 @@ JSON_Status  json_object_clear(JSON_Object *object : itype(_Ptr<JSON_Object> ) )
     return JSONFailure;
   }
   for (i = 0; i < json_object_get_count(object); i++) {
-    parson_free((void*)object->names[i]);
+    free_nt_array_ptr(object->names[i]);
     json_value_free(object->values[i]);
   }
   object->count = 0;
@@ -1861,7 +1965,7 @@ JSON_Status  json_validate(const JSON_Value *schema : itype(_Ptr<const JSON_Valu
   _Ptr<JSON_Array> schema_array = NULL, value_array = NULL;
   _Ptr<JSON_Object> schema_object = NULL, value_object = NULL;
   JSON_Value_Type schema_type = JSONError, value_type = JSONError;
-  const char *key = NULL;
+  _Nt_array_ptr<char> key = NULL;
   size_t i = 0, count = 0;
   if (schema == NULL || value == NULL) {
     return JSONFailure;
@@ -1898,7 +2002,7 @@ JSON_Status  json_validate(const JSON_Value *schema : itype(_Ptr<const JSON_Valu
       return JSONFailure; /* Tested object mustn't have less name-value pairs than schema */
     }
     for (i = 0; i < count; i++) {
-      key = json_object_get_name(schema_object, i);
+      key = (_Nt_array_ptr<char>)json_object_get_name(schema_object, i);
       temp_schema_value = json_object_get_value(schema_object, key);
       temp_value = json_object_get_value(value_object, key);
       if (temp_value == NULL) {
@@ -1917,10 +2021,11 @@ JSON_Status  json_validate(const JSON_Value *schema : itype(_Ptr<const JSON_Valu
 }
 
 int  json_value_equals(const JSON_Value *a : itype(_Ptr<const JSON_Value> ) , const JSON_Value *b : itype(_Ptr<const JSON_Value> ) ) {
-  const char *key = NULL;
+  _Nt_array_ptr<const char> key = NULL;
   _Ptr<JSON_Array> a_array = NULL, b_array = NULL;
   _Ptr<JSON_Object> a_object = NULL, b_object = NULL;
-  const char *a_string = NULL, *b_string = NULL;
+  _Nt_array_ptr<const char> a_string = NULL;
+  _Nt_array_ptr<const char> b_string = NULL;
   size_t a_count = 0, b_count = 0, i = 0;
   JSON_Value_Type a_type, b_type;
   a_type = json_value_get_type(a);
@@ -1961,8 +2066,8 @@ int  json_value_equals(const JSON_Value *a : itype(_Ptr<const JSON_Value> ) , co
     }
     return 1;
   case JSONString:
-    a_string = (const char*) json_value_get_string(a);
-    b_string = (const char*) json_value_get_string(b);
+    a_string = json_value_get_string(a);
+    b_string = json_value_get_string(b);
     if (a_string == NULL || b_string == NULL) {
       return 0; /* shouldn't happen */
     }
@@ -2010,3 +2115,5 @@ void json_set_allocation_functions(JSON_Malloc_Function malloc_fun, JSON_Free_Fu
   parson_malloc = malloc_fun;
   parson_free = free_fun;
 }
+
+#pragma CHECKED_SCOPE OFF
