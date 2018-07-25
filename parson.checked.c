@@ -31,9 +31,9 @@
 #include <stdio_checked.h>
 #include <stdlib_checked.h>
 #include <string_checked.h>
+#include <errno_checked.h>
 #include <ctype.h>
 #include <math_checked.h>
-#include <errno.h>
 #include <checkedc_extensions.h>
 
 #pragma CHECKED_SCOPE ON
@@ -575,7 +575,7 @@ static int  parse_utf16(const char **unprocessed : itype(_Ptr<_Nt_array_ptr<cons
   // have len + 1 of the first argument in that function. Therefore assigning this as bounds
   // is brittle but correct.
   _Nt_array_ptr<char> processed_ptr : count(string_length + 1) = _Dynamic_bounds_cast<_Nt_array_ptr<char>>(*processed, count(string_length + 1));
-  _Nt_array_ptr<const char> unprocessed_ptr : count(string_length) = _Dynamic_bounds_cast<_Nt_array_ptr<char>>(*unprocessed, count(string_length));
+  _Nt_array_ptr<const char> unprocessed_ptr = *unprocessed; //_Dynamic_bounds_cast<_Nt_array_ptr<char>>(*unprocessed, bounds(unprocessed_ptr, unprocessed_ptr + string_length));
   //char *processed_ptr = *processed;
   //const char *unprocessed_ptr = *unprocessed;
   unprocessed_ptr++; /* skips u */
@@ -585,7 +585,7 @@ static int  parse_utf16(const char **unprocessed : itype(_Ptr<_Nt_array_ptr<cons
   }
   // Note: If parse_succeeded, that means there are at least 4 elements in unprocessed.
   // By the logic of this function's only caller, processed is the same size as unprocessed.
-  _Dynamic_check(string_length >= 4); // && strlen(*processed) >= 4);
+  _Dynamic_check(string_length >= 4); 
   
   if (cp < 0x80) {
     processed_ptr[0] = (char)cp; /* 0xxxxxxx */
@@ -604,7 +604,8 @@ static int  parse_utf16(const char **unprocessed : itype(_Ptr<_Nt_array_ptr<cons
     if (*unprocessed_ptr++ != '\\' || *unprocessed_ptr++ != 'u') {
       return JSONFailure;
     }
-    parse_succeeded = parse_utf16_hex(unprocessed_ptr, &trail);
+    // TODO This should not need a cast: string_length >= 0
+    parse_succeeded = parse_utf16_hex(_Dynamic_bounds_cast<_Nt_array_ptr<char>>(unprocessed_ptr, count(0)), &trail);
     if (!parse_succeeded || trail < 0xDC00 || trail > 0xDFFF) { /* valid trail surrogate? (0xDC00..0xDFFF) */
       return JSONFailure;
     }
@@ -618,7 +619,8 @@ static int  parse_utf16(const char **unprocessed : itype(_Ptr<_Nt_array_ptr<cons
     return JSONFailure;
   }
   unprocessed_ptr += 3;
-  *processed = processed_ptr;
+  // 
+  *processed = _Dynamic_bounds_cast<_Nt_array_ptr<char>>(processed_ptr, bounds(*processed, *processed + 0));
   *unprocessed = unprocessed_ptr;
   return JSONSuccess;
 }
@@ -652,8 +654,13 @@ char* process_string(const char *input : itype(_Nt_array_ptr<const char>) count(
       case 'r':  *output_ptr = '\r'; break;
       case 't':  *output_ptr = '\t'; break;
       case 'u':
-        if (parse_utf16(&input_ptr, &output_ptr) == JSONFailure) {
-          goto error;
+        // TODO Cannot take address in checked code, needs a lot of manipulating to work.
+        _Unchecked {
+          const char* temp_input_ptr[1] = { (const char*)input_ptr };
+          char* temp_output_ptr[1] = { ((char*)output_ptr) };
+          if (parse_utf16(temp_input_ptr, temp_output_ptr) == JSONFailure) {
+            goto error;
+          }
         }
         break;
       default:
@@ -671,15 +678,16 @@ char* process_string(const char *input : itype(_Nt_array_ptr<const char>) count(
   /* resize to new length */
   final_size = (size_t)(output_ptr-output) + 1;
   /* todo: don't resize if final_size == initial_size */
-  _Nt_array_ptr<char> resized_output = (_Nt_array_ptr<char>) parson_malloc(final_size);
+  _Nt_array_ptr<char> resized_output : count(final_size) = (_Nt_array_ptr<char>) parson_malloc(final_size);
   if (resized_output == NULL) {
     goto error;
   }
-  memcpy(resized_output, output, final_size);
-  free_nt_array_ptr(output);
+  memcpy(resized_output, _Dynamic_bounds_cast<_Nt_array_ptr<char>>(output, count(final_size)), final_size);
+  // TODO Compiler should be able to tell that the size of output is >= 0!
+  free_nt_array_ptr(_Dynamic_bounds_cast<_Nt_array_ptr<char>>(output, count(0)));
   return resized_output;
  error:
-  free_nt_array_ptr(output);
+  free_nt_array_ptr(_Dynamic_bounds_cast<_Nt_array_ptr<char>>(output, count(0)));
   return NULL;
 }
 
@@ -691,11 +699,11 @@ char* get_quoted_string(const char **string : itype(_Ptr<_Nt_array_ptr<const cha
   if (status != JSONSuccess) {
     return NULL;
   }
-  size_t string_len = *string - string_start - 2; /* length without quotes */
+  size_t suffix_len = *string - string_start - 2; /* length without quotes */
   // TODO Annoying that string_start + 1 isn't calculated right
-  _Nt_array_ptr<const char> one_past_start = _Dynamic_bounds_cast<_Nt_array_ptr<const char>>(string_start + 1, count(0));
-   _Nt_array_ptr<char> to_return = process_string(one_past_start, string_len);
-  //_Nt_array_ptr<char> to_return = process_string(string_start + 1, string_len);
+  _Nt_array_ptr<const char> one_past_start : count(suffix_len) = _Dynamic_bounds_cast<_Nt_array_ptr<const char>>(string_start + 1, count(suffix_len));
+   _Nt_array_ptr<char> to_return = process_string(one_past_start, suffix_len);
+  //_Nt_array_ptr<char> to_return = process_string(string_start + 1, suffix_len);
   return to_return;
 }
 
@@ -703,10 +711,7 @@ _Ptr<JSON_Value>  parse_value(const char **string : itype(_Ptr<_Nt_array_ptr<con
   if (nesting > MAX_NESTING) {
     return NULL;
   }
-  // TODO Return used in checked scope must have a checked type or interface. Macro.
-  _Unchecked { 
-    SKIP_WHITESPACES(string);
-  }
+  SKIP_WHITESPACES(string);
   switch (**string) {
   case '{':
     return parse_object_value(string, nesting + 1);
@@ -765,28 +770,20 @@ _Ptr<JSON_Value> parse_object_value(const char **string : itype(_Ptr<_Nt_array_p
       return NULL;
     }
     free_nt_array_ptr(new_key);
-    _Unchecked {
-      SKIP_WHITESPACES(string);
-    }
+    SKIP_WHITESPACES(string);
     if (**string != ',') {
       break;
     }
-    //_Unchecked {
-      SKIP_CHAR(string);
-      SKIP_WHITESPACES(string);
-      //}
-  }
-  _Unchecked {
+    SKIP_CHAR(string);
     SKIP_WHITESPACES(string);
   }
+  SKIP_WHITESPACES(string);
   if (**string != '}' || /* Trim object after parsing is over */
       json_object_resize(output_object, json_object_get_count(output_object)) == JSONFailure) {
     json_value_free(output_value);
     return NULL;
   }
-  _Unchecked {
-    SKIP_CHAR(string);
-  }
+  SKIP_CHAR(string);
   return output_value;
 }
 
@@ -796,10 +793,8 @@ _Ptr<JSON_Value>  parse_array_value(const char **string : itype(_Ptr<_Nt_array_p
   if (!output_value || **string != '[') {
     return NULL;
   }
-  _Unchecked {
-    SKIP_CHAR(string);
-    SKIP_WHITESPACES(string);
-  }
+  SKIP_CHAR(string);
+  SKIP_WHITESPACES(string);
   if (**string == ']') { /* empty array */
     SKIP_CHAR(string);
     return output_value;
@@ -815,20 +810,14 @@ _Ptr<JSON_Value>  parse_array_value(const char **string : itype(_Ptr<_Nt_array_p
       json_value_free(output_value);
       return NULL;
     }
-    _Unchecked {
-      SKIP_WHITESPACES(string);
-    }
+    SKIP_WHITESPACES(string);
     if (**string != ',') {
       break;
     }
-    _Unchecked { 
-      SKIP_CHAR(string);
-      SKIP_WHITESPACES(string);
-    }
-  }
-  _Unchecked {
+    SKIP_CHAR(string);
     SKIP_WHITESPACES(string);
   }
+  SKIP_WHITESPACES(string);
   /* Trim array after parsing is over */
   if (**string != ']' || 
       json_array_resize(output_array, json_array_get_count(output_array)) == JSONFailure)
@@ -867,7 +856,9 @@ JSON_Value* parse_boolean_value(const char **string : itype(_Ptr<_Nt_array_ptr<c
   return NULL;
 }
 
-/* TODO: Don't have a way to initialize end properly. Leaving unchecked. */
+/* TODO: The way this function deals with end is not well supported by the compiler. 
+ * No initialization, needing to take the address, weird counting.
+ * Leaving this function unchecked for now as a result. */
 _Unchecked JSON_Value* parse_number_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) : itype(_Ptr<JSON_Value> )  {
   double number = 0;
   errno = 0;
@@ -1090,15 +1081,16 @@ int  json_serialize_string(const char *string : itype(_Nt_array_ptr<const char> 
     case '\x1e': APPEND_STRING("\\u001e"); break;
     case '\x1f': APPEND_STRING("\\u001f"); break;
     default:
-      // TODO Odd error about "source bounds are an empty range"
-      _Unchecked {
-        if (buf != NULL) {
+      // TODO Odd error about "source bounds are an empty range" - can't prove buf is big enough
+      // Logic is confusing, I can't easily either. Just going to unchecked.
+      if (buf != NULL) {
+        _Unchecked {
           buf[0] = c;
-          buf += 1;
         }
-        written_total += 1;
-        break;
+        buf += 1;
       }
+      written_total += 1;
+      break;
     }
   }
   APPEND_STRING("\"");
@@ -1167,18 +1159,21 @@ _Ptr<JSON_Value>  json_parse_string(const char *string : itype(_Nt_array_ptr<con
 }
 
 // TODO Function uses address of - unchecked for now.
-_Unchecked _Ptr<JSON_Value>  json_parse_string_with_comments(const char *string : itype(_Nt_array_ptr<const char> ) ) {
-  char* string_mutable_copy = (char*)parson_strdup(string);
+_Ptr<JSON_Value>  json_parse_string_with_comments(const char *string : itype(_Nt_array_ptr<const char> ) ) {
+  _Nt_array_ptr<char> string_mutable_copy = (_Nt_array_ptr<char>)parson_strdup(string);
   if (string_mutable_copy == NULL) {
     return NULL;
   }
   remove_comments(string_mutable_copy, "/*", "*/");
   remove_comments(string_mutable_copy, "//", "\n");
-  char* string_mutable_copy_ptr = string_mutable_copy;
-  _Ptr<JSON_Value> result = parse_value((const char**)&string_mutable_copy_ptr, 0);
+  _Unchecked {
+    const char* string_mutable_copy_ptr[1] = { NULL };
+    string_mutable_copy_ptr[0] = (const char*)string_mutable_copy;
+    _Ptr<JSON_Value> result = parse_value((const char**)string_mutable_copy_ptr, 0);
   
-  parson_free(string_mutable_copy);
-  return result;
+    free_nt_array_ptr(string_mutable_copy);
+    return result;
+  }
 }
 
 /* JSON Object API */
