@@ -120,8 +120,8 @@ _Ptr<JSON_Value>  json_value_init_string_no_copy(char *string : itype(_Nt_array_
 
 /* Parser */
 JSON_Status  skip_quotes(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) );
-int  parse_utf16(const char **unprocessed : itype(_Array_ptr<_Nt_array_ptr<const char>> ) , char **processed : itype(_Array_ptr<_Nt_array_ptr<char>> ) );
-char* process_string(const char *input : itype(_Nt_array_ptr<const char>) , size_t len) : itype(_Nt_array_ptr<char>);
+static int  parse_utf16(const char **unprocessed : itype(_Ptr<_Nt_array_ptr<const char>> ) , char **processed : itype(_Ptr<_Nt_array_ptr<char>> ) );
+char* process_string(const char *input : itype(_Nt_array_ptr<const char>) count(len), size_t len) : itype(_Nt_array_ptr<char>);
 char* get_quoted_string(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) ) : itype(_Nt_array_ptr<char>);
 _Ptr<JSON_Value>  parse_object_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) , size_t nesting);
 _Ptr<JSON_Value>  parse_array_value(const char **string : itype(_Ptr<_Nt_array_ptr<const char>> ) , size_t nesting);
@@ -165,9 +165,9 @@ static int hex_char_to_int(char c) {
   return -1;
 }
 
-// TODO: This function requires bounds widening logic, so is unchecked.
 int  parse_utf16_hex(const char *s : itype(_Nt_array_ptr<const char> ) , _Ptr<unsigned int> result) {
   int x1, x2, x3, x4;
+  // TODO: This function requires bounds widening logic, so is unchecked.
   _Unchecked {
     if (s[0] == '\0' || s[1] == '\0' || s[2] == '\0' || s[3] == '\0') {
       return 0;
@@ -264,11 +264,10 @@ int  is_decimal(const char *string : itype(_Nt_array_ptr<const char>) count(leng
     return 0;
   }
   // TODO: Would be great if compiler could recognize length > 2 here
-  _Unchecked {
-    if (length > 2 && !strncmp(string, "-0", 2) && string[2] != '.') {
-      return 0;
-    }
+  if (length > 2 && !strncmp(_Dynamic_bounds_cast<_Nt_array_ptr<char>>(string, count(0)), "-0", 2) && string[2] != '.') {
+    return 0;
   }
+
   while (length--) {
     if (strchr("xX", string[length])) {
       return 0;
@@ -445,31 +444,30 @@ JSON_Status  json_object_resize(JSON_Object *object : itype(_Ptr<JSON_Object> ) 
 JSON_Value* json_object_nget_value(const JSON_Object *object : itype(_Ptr<const JSON_Object>), const char *name : itype(_Nt_array_ptr<const char>), size_t n) : itype(_Ptr<JSON_Value>) {
   size_t i, name_length;
   for (i = 0; i < json_object_get_count(object); i++) {
-    // TODO: I wish the compiler could reason about the following two lines of code correctly without needing additional reasoning. Dynamic bounds cast causes a compiler crash at the moment.
-    _Unchecked {
-      name_length = strlen(object->names[i]);
-      const char* tmp_name = object->names[i];
+    name_length = strlen(object->names[i]);
+    _Nt_array_ptr<const char> tmp_name = object->names[i];
     
-      if (name_length != n) {
-        continue;
-      }
-      if (strncmp(tmp_name, name, n) == 0) {
-        return object->values[i];
-      }
-    } // unchecked
+    if (name_length != n) {
+      continue;
+    }
+    if (strncmp(tmp_name, name, n) == 0) {
+      return object->values[i];
+    }
   }
   return NULL;
 }
 
-// TODO: Lots of complaining about frees here, so unchecked
-_Unchecked void  json_object_free(JSON_Object *object : itype(_Ptr<JSON_Object> ) ) {
+void  json_object_free(JSON_Object *object : itype(_Ptr<JSON_Object> ) ) {
   size_t i;
   for (i = 0; i < object->count; i++) {
-    parson_free(object->names[i]);
+    free_nt_array_ptr(object->names[i]);
     json_value_free(object->values[i]);
   }
-  parson_free(object->names);
-  parson_free(object->values);
+  // TODO: Technically, these can be NULL and thus the argument will not meet the bounds
+  _Unchecked {
+    parson_free(object->names);
+    parson_free(object->values);
+  }
   parson_free(object);
 }
 
@@ -567,17 +565,28 @@ JSON_Status  skip_quotes(const char **string : itype(_Ptr<_Nt_array_ptr<const ch
   return JSONSuccess;
 }
 
-// TODO: todo, I think this one needs bounds widening
-_Unchecked int  parse_utf16(const char **unprocessed, char **processed) {
+// TODO: todo
+static int  parse_utf16(const char **unprocessed : itype(_Ptr<_Nt_array_ptr<const char>>),
+                 char **processed : itype(_Ptr<_Nt_array_ptr<char>>)) {
   unsigned int cp, lead, trail;
   int parse_succeeded = 0;
-  char *processed_ptr = *processed;
-  const char *unprocessed_ptr = *unprocessed;
+  size_t string_length = strlen(*unprocessed);
+  // This function has only one caller: process_string. The second argument is malloc'd to
+  // have len + 1 of the first argument in that function. Therefore assigning this as bounds
+  // is brittle but correct.
+  _Nt_array_ptr<char> processed_ptr : count(string_length + 1) = _Dynamic_bounds_cast<_Nt_array_ptr<char>>(*processed, count(string_length + 1));
+  _Nt_array_ptr<const char> unprocessed_ptr : count(string_length) = _Dynamic_bounds_cast<_Nt_array_ptr<char>>(*unprocessed, count(string_length));
+  //char *processed_ptr = *processed;
+  //const char *unprocessed_ptr = *unprocessed;
   unprocessed_ptr++; /* skips u */
-  parse_succeeded = parse_utf16_hex(unprocessed_ptr, &cp);
+  parse_succeeded = parse_utf16_hex(_Dynamic_bounds_cast<_Nt_array_ptr<char>>(unprocessed_ptr, count(0)), &cp);
   if (!parse_succeeded) {
     return JSONFailure;
   }
+  // Note: If parse_succeeded, that means there are at least 4 elements in unprocessed.
+  // By the logic of this function's only caller, processed is the same size as unprocessed.
+  _Dynamic_check(string_length >= 4); // && strlen(*processed) >= 4);
+  
   if (cp < 0x80) {
     processed_ptr[0] = (char)cp; /* 0xxxxxxx */
   } else if (cp < 0x800) {
@@ -619,15 +628,16 @@ _Unchecked int  parse_utf16(const char **unprocessed, char **processed) {
    Example: "\u006Corem ipsum" -> lorem ipsum */
 
 // TODO: Unchecked. Errors on using &. How to do this?
-_Unchecked char* process_string(const char *input : itype(_Nt_array_ptr<const char>), size_t len) : itype(_Nt_array_ptr<char>) {
-  const char* input_ptr = input;
+char* process_string(const char *input : itype(_Nt_array_ptr<const char>) count(len), size_t len) : itype(_Nt_array_ptr<char>) {
+  _Nt_array_ptr<const char> input_ptr : count(len) = input;
+  //const char* input_ptr = input;
   size_t initial_size = (len + 1) * sizeof(char);
   size_t final_size = 0;
-  char* output = (char*)parson_malloc(initial_size);
+  _Nt_array_ptr<char> output : count(len + 1) = (_Nt_array_ptr<char>)parson_malloc(initial_size);
   if (output == NULL) {
     goto error;
   }
-  char* output_ptr = output;
+  _Nt_array_ptr<char> output_ptr : count(len + 1) = output;
   while ((*input_ptr != '\0') && (size_t)(input_ptr - input) < len) {
     if (*input_ptr == '\\') {
       input_ptr++;
@@ -661,15 +671,15 @@ _Unchecked char* process_string(const char *input : itype(_Nt_array_ptr<const ch
   /* resize to new length */
   final_size = (size_t)(output_ptr-output) + 1;
   /* todo: don't resize if final_size == initial_size */
-  char* resized_output = (char*)parson_malloc(final_size);
+  _Nt_array_ptr<char> resized_output = (_Nt_array_ptr<char>) parson_malloc(final_size);
   if (resized_output == NULL) {
     goto error;
   }
   memcpy(resized_output, output, final_size);
-  parson_free(output);
+  free_nt_array_ptr(output);
   return resized_output;
  error:
-  parson_free(output);
+  free_nt_array_ptr(output);
   return NULL;
 }
 
@@ -723,10 +733,8 @@ _Ptr<JSON_Value> parse_object_value(const char **string : itype(_Ptr<_Nt_array_p
   if (output_value == NULL || **string != '{') {
     return NULL;
   }
-  _Unchecked { 
-    SKIP_CHAR(string);
-    SKIP_WHITESPACES(string);
-  }
+  SKIP_CHAR(string);
+  SKIP_WHITESPACES(string);
   if (**string == '}') { /* empty object */
     SKIP_CHAR(string);
     return output_value;
@@ -737,17 +745,13 @@ _Ptr<JSON_Value> parse_object_value(const char **string : itype(_Ptr<_Nt_array_p
       json_value_free(output_value);
       return NULL;
     }
-    //_Unchecked {
-      SKIP_WHITESPACES(string);
-      //}
+    SKIP_WHITESPACES(string);
     if (**string != ':') {
       free_nt_array_ptr(new_key);
       json_value_free(output_value);
       return NULL;
     }
-    _Unchecked {
-      SKIP_CHAR(string);
-    }
+    SKIP_CHAR(string);
     _Ptr<JSON_Value> new_value = parse_value(string, nesting);
     if (new_value == NULL) {
       free_nt_array_ptr(new_key);
